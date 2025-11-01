@@ -6,6 +6,17 @@ import dotenv from "dotenv";
 dotenv.config();
 console.log("ENV loaded. PORT=", process.env.PORT, "MONGO_URI set?", !!process.env.MONGO_URI);
 
+import userRoutes from "./routes/userRoutes.js";
+import patientRoutes from "./routes/patientRoutes.js";
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
+
+app.use("/api/users", userRoutes);
+app.use("/api/patients", patientRoutes);
+
+app.use(notFound);
+app.use(errorHandler);
+
+
 
 
 const app = express();
