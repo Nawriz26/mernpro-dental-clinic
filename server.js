@@ -10,6 +10,8 @@ import { connectDB } from "./config/db.js";
 // Routes & middleware
 import userRoutes from "./routes/userRoutes.js";
 import patientRoutes from "./routes/patientRoutes.js";
+import appointmentRoutes from './routes/appointmentRoutes.js';
+
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 // Debug (optional; remove later)
@@ -33,6 +35,7 @@ if (!process.env.MONGO_URI) {
 // API routes
 app.use("/api/users", userRoutes);
 app.use("/api/patients", patientRoutes);
+app.use('/api/appointments', appointmentRoutes);
 
 // 404 + error handlers
 app.use(notFound);
