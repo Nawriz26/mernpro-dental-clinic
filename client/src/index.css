@@ -11,3 +11,85 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+/* Smooth link hover + active state */
+.nav-link-animated {
+  transition: background-color 0.2s ease, transform 0.1s ease, color 0.2s ease;
+  border-radius: 999px;
+  padding-inline: 0.85rem;
+}
+
+.nav-link-animated:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+  color: #ffffff !important;
+}
+
+/* Active nav item */
+.navbar .nav-link.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffc107 !important; /* matches text-warning */
+}
+
+/* Brand hover */
+.nav-brand-animated {
+  transition: transform 0.15s ease;
+}
+
+.nav-brand-animated:hover {
+  transform: translateY(-1px);
+}
+
+/* Button hover */
+.btn-animated {
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.btn-animated:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.25);
+}
+
+/* Optional: make navbar shadow a bit stronger */
+.navbar.shadow-sm {
+  box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.25) !important;
+}
+/* Light vs Dark mode */
+body.light-theme {
+  background-color: #f5f6fa;
+  color: #212529;
+}
+
+body.dark-theme {
+  background-color: #070b13;
+  color: #f8f9fa;
+}
+
+.dark-theme .card {
+  background-color: #111827;
+  color: #f8f9fa;
+}
+
+.dark-theme .list-group-item {
+  background-color: #111827;
+  color: #f8f9fa;
+}
+
+.dark-theme .table {
+  color: #f8f9fa;
+}
+
+/* Simple page transition animation for route changes */
+.page-transition {
+  animation: fadeInUp 0.35s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

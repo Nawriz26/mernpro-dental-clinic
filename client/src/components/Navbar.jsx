@@ -111,44 +111,18 @@ export default function Navbar() {
         </ul>
 
         <ul className="navbar-nav align-items-center">
-  {/* Dark mode toggle */}
-      <li className="nav-item me-2">
-        <button
-          className="btn btn-outline-light btn-sm btn-animated"
-          type="button"
-          onClick={toggleDarkMode}
-        >
-          <i className={`bi ${isDark ? 'bi-sun-fill' : 'bi-moon-stars-fill'} me-1`}></i>
-          {isDark ? 'Light' : 'Dark'}
-        </button>
-      </li>
-
-      {user && (
-        <>
-          {/* <li className="nav-item me-2">
-            <span className="navbar-text text-white-50 small">
-              Welcome,&nbsp;
-              <span className="fw-semibold text-white">
-                {user.username}
-              </span>
-            </span>
-          </li> */}
-
-          {/* <li className="nav-item">
-            <button
-              className="btn btn-light btn-sm btn-animated"
-              onClick={() => {
-                logout();
-                closeMenu();
-              }}
-            >
-              <i className="bi bi-box-arrow-right me-1"></i>
-              Sign Out
-            </button>
-          </li> */}
-        </>
-      )}
-    </ul>
+        {/* Dark mode toggle */}
+        <li className="nav-item me-2">
+          <button
+            className="btn btn-outline-light btn-sm btn-animated"
+            type="button"
+            onClick={toggleDarkMode}
+          >
+            <i className={`bi ${isDark ? 'bi-sun-fill' : 'bi-moon-stars-fill'} me-1`}></i>
+            {isDark ? 'Light' : 'Dark'}
+          </button>
+        </li>
+        </ul>
 
 
         {/* RIGHT: Welcome + Sign Out */}
