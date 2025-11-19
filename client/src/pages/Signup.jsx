@@ -41,14 +41,16 @@ export default function Signup() {
   };
 
   return (
-    <div className="container py-4 page-transition" style={{ maxWidth: 450 }}>
-      <h2 className="mb-3">Create Account</h2>
+    <div className="container py-4 page-transition" style={{ maxWidth: 450 , alignContent: 'center', height: '100vh' }}>
+      
 
-      <form onSubmit={submit}>
+      <form className="container text-center page-transition p-4 border border-secondary rounded" onSubmit={submit}>
+        <h2 className="mb-3">Create Account</h2>
+        
         <div className="mb-2">
-          <label>Username</label>
           <input
-            className="form-control"
+          placeholder='Username'
+            className="form-control p-3"
             value={form.username}
             onChange={(e) => setForm({ ...form, username: e.target.value })}
             required
@@ -56,10 +58,10 @@ export default function Signup() {
         </div>
 
         <div className="mb-2">
-          <label>Email</label>
           <input
             type="email"
-            className="form-control"
+            placeholder='Email'
+            className="form-control p-3"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             required
@@ -67,10 +69,11 @@ export default function Signup() {
         </div>
 
         <div className="mb-2">
-          <label>Password</label>
+         
           <input
-            type="password"
-            className="form-control"
+          type="password"
+            placeholder='Password'
+            className="form-control p-3"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             required
@@ -98,6 +101,9 @@ export default function Signup() {
           {!loading && success && 'Success!'}
           {!loading && !success && 'Sign Up'}
         </button>
+
+
+        <p className ="text-center mt-3 pt-2"> Already Registered? <a href="/login">Log In</a></p>
       </form>
     </div>
   );

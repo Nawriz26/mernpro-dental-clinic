@@ -65,19 +65,19 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container py-4 page-transition">
-      <h2>Patient Dashboard</h2>
+    <div className="container gap-1 py-4 page-transition">
+      <h2 className='center-text w-100 p-2'>Patient Dashboard</h2>
 
       <div className="row mt-3">
         <div className="col-md-5">
-          <div className="card card-body">
-            <h5>{editing ? 'Edit Patient' : 'Add New Patient'}</h5>
+          <div className="container card card-body ">
+            <h5 className = "alignContent">{editing ? 'Edit Patient' : 'Add New Patient'}</h5>
             <PatientForm initial={editing} onSubmit={editing ? update : create} />
           </div>
         </div>
 
         <div className="col-md-7">
-          <div className="card card-body">
+          <div className="container card card-body">
 
             <div className="d-flex justify-content-between align-items-center mb-2">
               <h5 className="mb-0">Patients</h5>

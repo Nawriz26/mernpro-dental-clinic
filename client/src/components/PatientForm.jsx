@@ -25,9 +25,9 @@ export default function PatientForm({ onSubmit, initial }) {
       {field('email','email','Email')}
       {field('phone','text','Phone')}
       {field('dateOfBirth','date','Date of Birth')}
-      {field('address')}
-      {field('notes')}
-      <button className="btn btn-primary mt-2">Save</button>
+      {field('Address (To be Added)')}
+      {field('Notes (To be Added)')}
+      <button className="btn btn-primary mt-3 float-end">Save</button>
     </form>
   );
 }
