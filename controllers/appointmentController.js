@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Appointment from '../models/appointmentModel.js';
-import Patient from '../models/patientModel.js';
+import Patient from '../models/patient.js';
 
 
 export const getAppointments = asyncHandler(async (req, res) => {
