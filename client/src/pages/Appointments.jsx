@@ -4,17 +4,21 @@ import { toast } from 'react-toastify';
 
 export default function Appointments() {
   const [appointments, setAppointments] = useState([]);
+  const [patients, setPatients] = useState([]);
+
   const [form, setForm] = useState({
-    patientName: '',
+    patientId: '',
     date: '',
     time: '',
     reason: '',
     status: 'Scheduled',
   });
+
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const load = async () => {
+  // Load appointments from API
+  const loadAppointments = async () => {
     try {
       const { data } = await api.get('/appointments');
       setAppointments(data);
@@ -23,24 +27,61 @@ export default function Appointments() {
     }
   };
 
+  // Load patients for dropdown
+  const loadPatients = async () => {
+    try {
+      const { data } = await api.get('/patients');
+      setPatients(data);
+    } catch {
+      toast.error('Failed to load patients for dropdown');
+    }
+  };
+
   useEffect(() => {
-    load();
+    loadAppointments();
+    loadPatients();
   }, []);
+
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    if (!form.patientId) {
+      toast.error('Please select a patient');
+      return;
+    }
+
     setLoading(true);
     try {
+      const payload = {
+        patientId: form.patientId,
+        date: form.date,
+        time: form.time,
+        reason: form.reason,
+        status: form.status,
+      };
+
       if (editingId) {
-        await api.put(`/appointments/${editingId}`, form);
+        await api.put(`/appointments/${editingId}`, payload);
         toast.success('Appointment updated');
       } else {
-        await api.post('/appointments', form);
+        await api.post('/appointments', payload);
         toast.success('Appointment created');
       }
-      setForm({ patientName: '', date: '', time: '', reason: '', status: 'Scheduled' });
+
+      setForm({
+        patientId: '',
+        date: '',
+        time: '',
+        reason: '',
+        status: 'Scheduled',
+      });
       setEditingId(null);
-      load();
+      loadAppointments();
     } catch {
       toast.error('Error saving appointment');
     } finally {
@@ -50,8 +91,15 @@ export default function Appointments() {
 
   const onEdit = (appt) => {
     setEditingId(appt._id);
+
+    // Handle both populated and non-populated patientId
+    const patientId =
+      (appt.patientId && appt.patientId._id) ||
+      appt.patientId ||
+      '';
+
     setForm({
-      patientName: appt.patientName || '',
+      patientId,
       date: appt.date?.slice(0, 10) || '',
       time: appt.time || '',
       reason: appt.reason || '',
@@ -64,7 +112,7 @@ export default function Appointments() {
     try {
       await api.delete(`/appointments/${id}`);
       toast.success('Appointment deleted');
-      load();
+      loadAppointments();
     } catch {
       toast.error('Error deleting appointment');
     }
@@ -79,14 +127,23 @@ export default function Appointments() {
           <div className="card card-body">
             <h5>{editingId ? 'Edit Appointment' : 'New Appointment'}</h5>
             <form onSubmit={onSubmit}>
+              {/* Patient dropdown */}
               <div className="mb-2">
-                <label className="form-label">Patient Name</label>
-                <input
-                  className="form-control"
-                  value={form.patientName}
-                  onChange={(e) => setForm({ ...form, patientName: e.target.value })}
+                <label className="form-label">Patient</label>
+                <select
+                  className="form-select"
+                  name="patientId"
+                  value={form.patientId}
+                  onChange={onChange}
                   required
-                />
+                >
+                  <option value="">-- Select Patient --</option>
+                  {patients.map((p) => (
+                    <option key={p._id} value={p._id}>
+                      {p.name} {p.email ? `(${p.email})` : ''}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="mb-2">
@@ -94,8 +151,9 @@ export default function Appointments() {
                 <input
                   type="date"
                   className="form-control"
+                  name="date"
                   value={form.date}
-                  onChange={(e) => setForm({ ...form, date: e.target.value })}
+                  onChange={onChange}
                   required
                 />
               </div>
@@ -105,8 +163,9 @@ export default function Appointments() {
                 <input
                   type="time"
                   className="form-control"
+                  name="time"
                   value={form.time}
-                  onChange={(e) => setForm({ ...form, time: e.target.value })}
+                  onChange={onChange}
                   required
                 />
               </div>
@@ -115,8 +174,9 @@ export default function Appointments() {
                 <label className="form-label">Reason</label>
                 <input
                   className="form-control"
+                  name="reason"
                   value={form.reason}
-                  onChange={(e) => setForm({ ...form, reason: e.target.value })}
+                  onChange={onChange}
                 />
               </div>
 
@@ -124,8 +184,9 @@ export default function Appointments() {
                 <label className="form-label">Status</label>
                 <select
                   className="form-select"
+                  name="status"
                   value={form.status}
-                  onChange={(e) => setForm({ ...form, status: e.target.value })}
+                  onChange={onChange}
                 >
                   <option>Scheduled</option>
                   <option>Completed</option>
@@ -156,7 +217,12 @@ export default function Appointments() {
               <tbody>
                 {appointments.map((a) => (
                   <tr key={a._id}>
-                    <td>{a.patientName}</td>
+                    <td>
+                      {/* Prefer patientName, fall back to populated patientId.name */}
+                      {a.patientName ||
+                        a.patientId?.name ||
+                        '(Unknown)'}
+                    </td>
                     <td>{a.date?.slice(0, 10)}</td>
                     <td>{a.time}</td>
                     <td>{a.status}</td>
@@ -177,7 +243,11 @@ export default function Appointments() {
                   </tr>
                 ))}
                 {appointments.length === 0 && (
-                  <tr><td colSpan="5" className="text-muted">No appointments yet.</td></tr>
+                  <tr>
+                    <td colSpan="5" className="text-muted">
+                      No appointments yet.
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>
