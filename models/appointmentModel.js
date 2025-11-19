@@ -2,6 +2,11 @@ import mongoose from 'mongoose';
 
 const appointmentSchema = new mongoose.Schema(
   {
+    patientId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Patient',          
+      required: true,
+    },
     patientName: {
       type: String,
       required: true,
@@ -12,7 +17,7 @@ const appointmentSchema = new mongoose.Schema(
       required: true,
     },
     time: {
-      type: String, // simple '14:30' string
+      type: String, // '14:30'
       required: true,
     },
     reason: {
@@ -24,16 +29,13 @@ const appointmentSchema = new mongoose.Schema(
       enum: ['Scheduled', 'Completed', 'Cancelled'],
       default: 'Scheduled',
     },
-    // which staff user created this appointment
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);
