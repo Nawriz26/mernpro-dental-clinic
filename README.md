@@ -2,9 +2,9 @@
 
 A full-stack MERN application for managing patients, appointments, and clinic staff workflows.
 
-=====================
+
 📘 Project Overview
-=====================
+
 The MERNPro Dental Clinic Management System is a full-stack MERN application designed to help dental clinics manage their operations efficiently.
 
 **This system allows staff to manage:**
@@ -21,109 +21,109 @@ The MERNPro Dental Clinic Management System is a full-stack MERN application des
 
 This repository includes both backend API (Node.js + Express + MongoDB) and React frontend integrated together.
 
-=====================
+
 ⭐ Features
-=====================
+
 
 **🔐 Authentication & Authorization**
 
-User Registration
+- User Registration
 
-User Login
+- User Login
 
-JWT-based authentication
+- JWT-based authentication
 
-Protected routes (Dashboard, Profile, Appointments)
+- Protected routes (Dashboard, Profile, Appointments)
 
-Role-aware UI (future-ready)
+- Role-aware UI (future-ready)
 
 **👨‍⚕️ Patient Management**
 
-Add new patients
+- Add new patients
 
-Edit patient info
+- Edit patient info
 
-Delete patient
+- Delete patient
 
-View all patients in table
+- View all patients in table
 
-Search patient by name / email / phone
+- Search patient by name / email / phone
 
-Pagination
+- Pagination
 
 **📅 Appointment Management**
 
-Full CRUD for appointments
+- Full CRUD for appointments
 
-NEW: Linked appointments → patients using patientId
+- NEW: Linked appointments → patients using patientId
 
-Patient dropdown selector
+- Patient dropdown selector
 
-Status tracking (Scheduled / Completed / Cancelled)
+- Status tracking (Scheduled / Completed / Cancelled)
 
 **👤 User Profile**
 
-Update username
+- Update username
 
-Update email
+- Update email
 
-Navbar dynamically updates “Welcome, {username}”
+- Navbar dynamically updates “Welcome, {username}”
 
 **🎨 UI/UX Enhancements**
 
-Light/Dark mode toggle
+- Light/Dark mode toggle
 
-Toast notifications (success/error)
+- Toast notifications (success/error)
 
-Loading animations (4 seconds spinner + green checkmark)
+- Loading animations (4 seconds spinner + green checkmark)
 
-Animated route transitions
+- Animated route transitions
 
-Mobile responsive navbar
+- Mobile responsive navbar
 
-Clinic logo integrated into navbar + favicon
+- Clinic logo integrated into navbar + favicon
 
-=====================
+
 🛠 Tech Stack
-=====================
+
 
 **Frontend**
 
-React
+- React
 
-React Router
+- React Router
 
-Bootstrap 5
+- Bootstrap 5
 
-Axios
+- Axios
 
-React Toastify
+- React Toastify
 
 **Backend**
 
-Node.js
+- Node.js
 
-Express.js
+- Express.js
 
-MongoDB Atlas
+- MongoDB Atlas
 
-Mongoose
+-Mongoose
 
-JWT Authentication
+- JWT Authentication
 
-bcryptjs
+- bcryptjs
 
 **Tools**
 
-Postman
+- Postman
 
-VS Code
+- VS Code
 
-GitHub
+- GitHub
 
-Trello (Agile Project Board)
+- Trello (Agile Project Board)
 
-Canva / Figma (Wireframes)
+- Canva / Figma (Wireframes)
 
 ## Quick start
 ```bash
