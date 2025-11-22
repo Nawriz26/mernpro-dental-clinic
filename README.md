@@ -1,9 +1,9 @@
-🦷 MERNPro Dental Clinic Management Web Application
+# 🦷 MERNPro Dental Clinic Management Web Application
 
 A full-stack MERN application for managing patients, appointments, and clinic staff workflows.
 
 
-📘 Project Overview
+## 📘 Project Overview
 
 The MERNPro Dental Clinic Management System is a full-stack MERN application designed to help dental clinics manage their operations efficiently.
 
@@ -22,10 +22,10 @@ The MERNPro Dental Clinic Management System is a full-stack MERN application des
 This repository includes both backend API (Node.js + Express + MongoDB) and React frontend integrated together.
 
 
-⭐ Features
+## ⭐ Features
 
 
-**🔐 Authentication & Authorization**
+### 🔐 Authentication & Authorization
 
 - User Registration
 
@@ -37,7 +37,7 @@ This repository includes both backend API (Node.js + Express + MongoDB) and Reac
 
 - Role-aware UI (future-ready)
 
-**👨‍⚕️ Patient Management**
+### 👨‍⚕️ Patient Management
 
 - Add new patients
 
@@ -51,7 +51,7 @@ This repository includes both backend API (Node.js + Express + MongoDB) and Reac
 
 - Pagination
 
-**📅 Appointment Management**
+### 📅 Appointment Management
 
 - Full CRUD for appointments
 
@@ -61,7 +61,7 @@ This repository includes both backend API (Node.js + Express + MongoDB) and Reac
 
 - Status tracking (Scheduled / Completed / Cancelled)
 
-**👤 User Profile**
+### 👤 User Profile
 
 - Update username
 
@@ -69,7 +69,7 @@ This repository includes both backend API (Node.js + Express + MongoDB) and Reac
 
 - Navbar dynamically updates “Welcome, {username}”
 
-**🎨 UI/UX Enhancements**
+### 🎨 UI/UX Enhancements
 
 - Light/Dark mode toggle
 
@@ -84,10 +84,9 @@ This repository includes both backend API (Node.js + Express + MongoDB) and Reac
 - Clinic logo integrated into navbar + favicon
 
 
-🛠 Tech Stack
+## 🛠 Tech Stack
 
-
-**Frontend**
+### Frontend
 
 - React
 
@@ -99,7 +98,7 @@ This repository includes both backend API (Node.js + Express + MongoDB) and Reac
 
 - React Toastify
 
-**Backend**
+### Backend
 
 - Node.js
 
@@ -107,13 +106,13 @@ This repository includes both backend API (Node.js + Express + MongoDB) and Reac
 
 - MongoDB Atlas
 
--Mongoose
+- Mongoose
 
 - JWT Authentication
 
 - bcryptjs
 
-**Tools**
+### Tools
 
 - Postman
 
