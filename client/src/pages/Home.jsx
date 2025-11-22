@@ -12,16 +12,16 @@ export default function Home() {
   }, [user]);
 
   return (
-    <div cclassName="container py-4 page-transition">
-      <h1 className="mb-3">Welcome to MERNPro Dental Clinic</h1>
-      <p className="text-muted"> Secure patient management built with MERN</p>
+    <div className="container text-center page-transition" style={{ alignContent: 'center', height: '100vh' }}>
+      <h1 className="mb-3 fw-bold">Welcome to MERNPro Dental Clinic</h1>
+     
 
       {/* {!user && <p className="mt-3">Please sign in to view patients.</p>} */}
 
       {/* Add two clear buttons/links on Home for Sign In / Sign Up */}
       {!user && (
         <div className="mt-3">
-          <p>Please sign in or create an account to manage patients.</p>
+          <p>Get started by signing in or creating an account to manage patients.</p>
           <a href="/login" className="btn btn-primary me-2">Sign In</a>
           <a href="/signup" className="btn btn-outline-primary">Sign Up</a>
         </div>
@@ -29,8 +29,9 @@ export default function Home() {
 
       {user && (
         <>
-          <h4 className="mt-4">Recent Patients</h4>
-          <ul className="list-group">
+        
+          <h4 className="m-4">Recent Patients</h4>
+          <ul className=" container mx-50vw list-group">
             {patients.map(p => (
               <li key={p._id} className="list-group-item d-flex justify-content-between">
                 <span><strong>{p.name}</strong> — {p.email} — {p.phone}</span>
@@ -38,8 +39,15 @@ export default function Home() {
             ))}
             {patients.length === 0 && <li className="list-group-item">No patients yet.</li>}
           </ul>
+          
         </>
       )}
+
+
+
+      <footer className="footer fixed-bottom m-0" > 
+        <p className="footer" style={{ alignContent: 'center' }}>Secure patient management built with MERN</p>
+        </footer>
     </div>
   );
 }

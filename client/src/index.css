@@ -7,6 +7,36 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.dark-theme footer {
+  background-color: #24396b;
+  color: #f8f9fa;
+}
+
+footer {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+.dark-theme .table-striped th {
+  background-color: #1d273d;
+  color: white;
+}
+
+.dark-theme .table-striped>tbody>tr:nth-child(odd)>td{
+   background-color: #282e3d;
+   color: white; 
+}
+.dark-theme .table-striped>tbody>tr:nth-child(even)>td {
+   background-color: #3f4349;
+   color: white;
+ }
+ .table-striped>tbody>tr:nth-child(odd)>td {
+   background-color: rgb(243, 250, 255);
+ }
+ .table-striped>tbody>tr:nth-child(even)>td {
+   background-color: rgb(255, 255, 255);
+ }
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -60,14 +90,15 @@ body.light-theme {
 }
 
 body.dark-theme {
-  background-color: #070b13;
+  background-color: #101829;
   color: #f8f9fa;
 }
 
 .dark-theme .card {
-  background-color: #111827;
+  background-color: #1d273d;
   color: #f8f9fa;
 }
+
 
 .dark-theme .list-group-item {
   background-color: #111827;
@@ -75,6 +106,11 @@ body.dark-theme {
 }
 
 .dark-theme .table {
+  color: #f8f9fa;
+}
+
+.dark-theme .navbar {
+  background-color: #132858 !important;
   color: #f8f9fa;
 }
 

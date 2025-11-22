@@ -202,9 +202,9 @@ export default function Appointments() {
         </div>
 
         <div className="col-md-7">
-          <div className="card card-body">
+          <div className="table-responsive card card-body">
             <h5>Upcoming Appointments</h5>
-            <table className="table table-striped mt-2">
+            <table className="table table-striped mt-2 rounded">
               <thead>
                 <tr>
                   <th>Patient</th>
@@ -228,13 +228,13 @@ export default function Appointments() {
                     <td>{a.status}</td>
                     <td className="text-end">
                       <button
-                        className="btn btn-sm btn-outline-secondary me-2"
+                        className="btn btn-sm btn-outline-secondary me-2 w-100"
                         onClick={() => onEdit(a)}
                       >
                         Edit
                       </button>
                       <button
-                        className="btn btn-sm btn-outline-danger"
+                        className="btn btn-sm btn-outline-danger w-100"
                         onClick={() => onDelete(a._id)}
                       >
                         Delete

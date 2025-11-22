@@ -44,14 +44,17 @@ export default function Login() {
   };
 
   return (
-    <div className="container py-4 page-transition" style={{ maxWidth: 450 }}>
-      <h2 className="mb-3">Sign In</h2>
+    
+    <div className="container page-transition" style={{ maxWidth: 450, alignContent: 'center', height: '100vh'}}>
+      
 
-      <form onSubmit={submit}>
+      <form className="container text-center page-transition p-4 border border-secondary rounded"  onSubmit={submit}>
+        <h2 className="mb-3">Sign In</h2>
         <div className="mb-2">
-          <label>Email or Username</label>
+        
           <input
-            className="form-control"
+            placeholder='Email or Username'
+            className="form-control p-3"
             value={emailOrUsername}
             onChange={(e) => setUser(e.target.value)}
             required
@@ -59,10 +62,10 @@ export default function Login() {
         </div>
 
         <div className="mb-2">
-          <label>Password</label>
           <input
             type="password"
-            className="form-control"
+            placeholder='Password'
+            className="form-control p-3"
             value={password}
             onChange={(e) => setPass(e.target.value)}
             required
@@ -90,7 +93,12 @@ export default function Login() {
           {!loading && success && 'Success!'}
           {!loading && !success && 'Login'}
         </button>
+
+
+        <p className ="text-center mt-3 pt-2"> Not Registered? <a href="/signup">Sign Up</a></p>
       </form>
+
+      
     </div>
   );
 }
