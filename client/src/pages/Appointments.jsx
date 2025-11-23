@@ -122,6 +122,20 @@ export default function Appointments() {
     }
   };
 
+  // Add filter appointments by search term + status
+const filteredAppointments = appointments.filter((a) => {
+  const name =
+    a.patientName || a.patientId?.name || '';
+
+  const matchesSearch =
+    name.toLowerCase().includes(searchTerm.toLowerCase());
+
+  const matchesStatus =
+    statusFilter === 'All' || a.status === statusFilter;
+
+  return matchesSearch && matchesStatus;
+});
+
   return (
     <div className="container py-4 page-transition">
       <h2>Appointments</h2>
