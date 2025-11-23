@@ -61,10 +61,7 @@ export default function PatientForm({ onSubmit, initial }) {
       {field('phone', 'text', 'Phone')}
       {field('dateOfBirth', 'date', 'Date of Birth')}
       {field('Address (To be Added)')}
-       {field('Notes (To be Added)')}
-    
-      {/* {field('address', 'text', 'Address')} */}
-      {/* {field('notes', 'text', 'Notes')} */}
+      {field('Notes (To be Added)')}
       <button className="btn btn-primary mt-3 float-end">
         {initial ? 'Update' : 'Save'}
       </button>

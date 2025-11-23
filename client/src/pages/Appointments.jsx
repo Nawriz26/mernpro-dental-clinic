@@ -17,6 +17,10 @@ export default function Appointments() {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Search + Filter states
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All');
+
   // Load appointments from API
   const loadAppointments = async () => {
     try {
