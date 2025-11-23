@@ -14,38 +14,49 @@ export default function Dashboard() {
   const [page, setPage] = useState(1);
   const pageSize = 5;
 
+  // Load all patients
   const load = async () => {
     const { data } = await api.get('/patients');
     setPatients(data);
-    setEditing(null);
+    setEditing(null); // reset editing after load
     setPatientCount(data.length);
     setPage(1);
   };
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line
   }, []);
 
-  const create = async (payload) => {
-    await api.post('/patients', payload);
-    toast.success('Patient created');
-    await load();
-  };
-
-  const update = async (payload) => {
-    await api.put(`/patients/${editing._id}`, payload);
-    toast.success('Patient updated');
-    await load();
+  // Single save function for create/update
+  const savePatient = async (payload) => {
+    try {
+      if (editing && editing._id) {
+        await api.put(`/patients/${editing._id}`, payload);
+        toast.success('Patient updated');
+      } else {
+        await api.post('/patients', payload);
+        toast.success('Patient created');
+      }
+      await load();
+    } catch (error) {
+      toast.error('Error saving patient');
+      console.error(error);
+    }
   };
 
   const remove = async (id) => {
     if (!window.confirm('Delete this patient?')) return;
-    await api.delete(`/patients/${id}`);
-    toast.success('Patient deleted');
-    await load();
+    try {
+      await api.delete(`/patients/${id}`);
+      toast.success('Patient deleted');
+      await load();
+    } catch (error) {
+      toast.error('Error deleting patient');
+      console.error(error);
+    }
   };
 
+  // Filtered and paginated patients
   const filtered = patients.filter((p) => {
     const q = searchTerm.toLowerCase();
     return (
@@ -71,8 +82,8 @@ export default function Dashboard() {
       <div className="row mt-3">
         <div className="col-md-5">
           <div className="container card card-body ">
-            <h5 className = "alignContent">{editing ? 'Edit Patient' : 'Add New Patient'}</h5>
-            <PatientForm initial={editing} onSubmit={editing ? update : create} />
+            <h5 className="alignContent">{editing ? 'Edit Patient' : 'Add New Patient'}</h5>
+            <PatientForm initial={editing} onSubmit={savePatient} />
           </div>
         </div>
 
