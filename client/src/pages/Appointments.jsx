@@ -21,7 +21,7 @@ export default function Appointments() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
 
-  // Load appointments from API
+  // Load appointments
   const loadAppointments = async () => {
     try {
       const { data } = await api.get('/appointments');
@@ -96,7 +96,6 @@ export default function Appointments() {
   const onEdit = (appt) => {
     setEditingId(appt._id);
 
-    // Handle both populated and non-populated patientId
     const patientId =
       (appt.patientId && appt.patientId._id) ||
       appt.patientId ||
@@ -123,18 +122,18 @@ export default function Appointments() {
   };
 
   // Add filter appointments by search term + status
-const filteredAppointments = appointments.filter((a) => {
-  const name =
-    a.patientName || a.patientId?.name || '';
+  const filteredAppointments = appointments.filter((a) => {
+    const name =
+      a.patientName || a.patientId?.name || '';
 
-  const matchesSearch =
-    name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      name.toLowerCase().includes(searchTerm.toLowerCase());
 
-  const matchesStatus =
-    statusFilter === 'All' || a.status === statusFilter;
+    const matchesStatus =
+      statusFilter === 'All' || a.status === statusFilter;
 
-  return matchesSearch && matchesStatus;
-});
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="container py-4 page-transition">
@@ -222,6 +221,29 @@ const filteredAppointments = appointments.filter((a) => {
         <div className="col-md-7">
           <div className="table-responsive card card-body">
             <h5>Upcoming Appointments</h5>
+
+            {/* Search + Filter Controls */}
+            <div className="d-flex gap-2 mb-3">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Search by patient name..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+
+              <select
+                className="form-select"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="All">All</option>
+                <option value="Scheduled">Scheduled</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+
             <table className="table table-striped mt-2 rounded">
               <thead>
                 <tr>
@@ -233,10 +255,9 @@ const filteredAppointments = appointments.filter((a) => {
                 </tr>
               </thead>
               <tbody>
-                {appointments.map((a) => (
+                {filteredAppointments.map((a) => (
                   <tr key={a._id}>
                     <td>
-                      {/* Prefer patientName, fall back to populated patientId.name */}
                       {a.patientName ||
                         a.patientId?.name ||
                         '(Unknown)'}
@@ -260,18 +281,22 @@ const filteredAppointments = appointments.filter((a) => {
                     </td>
                   </tr>
                 ))}
-                {appointments.length === 0 && (
+
+                {filteredAppointments.length === 0 && (
                   <tr>
                     <td colSpan="5" className="text-muted">
-                      No appointments yet.
+                      No appointments found.
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
+
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+
