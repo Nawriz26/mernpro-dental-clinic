@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { toast } from 'react-toastify';
+import ConfirmModal from '../components/ConfirmModal';
 
 export default function Appointments() {
   const [appointments, setAppointments] = useState([]);
   const [patients, setPatients] = useState([]);
+  const [selectedPatient, setSelectedPatient] = useState(null);
 
   const [form, setForm] = useState({
     patientId: '',
@@ -111,11 +113,11 @@ export default function Appointments() {
   };
 
   const onDelete = async (id) => {
-    if (!window.confirm('Delete this appointment?')) return;
+
     try {
       await api.delete(`/appointments/${id}`);
       toast.success('Appointment deleted');
-      loadAppointments();
+      await loadAppointments();
     } catch {
       toast.error('Error deleting appointment');
     }
@@ -274,8 +276,11 @@ export default function Appointments() {
                       </button>
                       <button
                         className="btn btn-sm btn-outline-danger w-100"
-                        onClick={() => onDelete(a._id)}
+                        onClick={() => setSelectedPatient(a._id)}
                       >
+
+              
+
                         Delete
                       </button>
                     </td>
@@ -289,9 +294,24 @@ export default function Appointments() {
                     </td>
                   </tr>
                 )}
+
+                
               </tbody>
             </table>
 
+                <ConfirmModal
+                    show={!!selectedPatient}
+                    message= "Are you sure that you wish to delete the appointment?"
+                    onConfirm={async () => {
+                      if (!selectedPatient) return;
+                      // ConfirmModal already logs once to console
+                      await onDelete(selectedPatient || selectedPatient);
+                      setSelectedPatient(null);
+                    }}
+                    onCancel={() => setSelectedPatient(null)}
+                    confirmText="Delete"
+                    cancelText="Cancel"
+                    />
           </div>
         </div>
       </div>

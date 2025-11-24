@@ -1,3 +1,5 @@
+import ConfirmModal from "./ConfirmModal";
+
 export default function PatientTable({ patients, onEdit, onDelete }) {
   return (
     <div className="table-responsive mb-4">

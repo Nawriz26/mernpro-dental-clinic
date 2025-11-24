@@ -7,6 +7,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.dark-theme .modal-content{
+  border: 1px solid #101829;
+   background-color: #1d273d;
+  color: #f8f9fa;
+}
+
 .dark-theme footer {
   background-color: #24396b;
   color: #f8f9fa;

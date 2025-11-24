@@ -4,11 +4,12 @@ import PatientForm from '../components/PatientForm';
 import PatientTable from '../components/PatientTable';
 import { usePatients } from '../context/PatientContext';
 import { toast } from 'react-toastify';
-
+import ConfirmModal from '../components/ConfirmModal';
 export default function Dashboard() {
   const [patients, setPatients] = useState([]);
   const [editing, setEditing] = useState(null);
   const { setPatientCount } = usePatients();
+  const [selectedPatient, setSelectedPatient] = useState(null);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
@@ -27,33 +28,28 @@ export default function Dashboard() {
     load();
   }, []);
 
-  // Single save function for create/update
-  const savePatient = async (payload) => {
-    try {
-      if (editing && editing._id) {
-        await api.put(`/patients/${editing._id}`, payload);
-        toast.success('Patient updated');
-      } else {
-        await api.post('/patients', payload);
-        toast.success('Patient created');
-      }
-      await load();
-    } catch (error) {
-      toast.error('Error saving patient');
-      console.error(error);
-    }
+  const authenticatePhone = async (phone) => {
+    const { data } = await api.post('/auth/send-code', { phone });
+    return data;
+  }
+
+  const create = async (payload) => {
+    await api.post('/patients', payload);
+    toast.success('Patient created');
+    await load();
+  };
+
+  const update = async (payload) => {
+    await api.put(`/patients/${editing._id}`, payload);
+    toast.success('Patient updated');
+    await load();
   };
 
   const remove = async (id) => {
-    if (!window.confirm('Delete this patient?')) return;
-    try {
-      await api.delete(`/patients/${id}`);
-      toast.success('Patient deleted');
-      await load();
-    } catch (error) {
-      toast.error('Error deleting patient');
-      console.error(error);
-    }
+    // if (!window.confirm('Delete this patient?')) return;
+    await api.delete(`/patients/${id}`);
+    toast.success('Patient deleted');
+    await load();
   };
 
   // Filtered and paginated patients
@@ -108,7 +104,21 @@ export default function Dashboard() {
             <PatientTable
               patients={current}
               onEdit={setEditing}
-              onDelete={remove}
+              onDelete={setSelectedPatient}
+            />
+
+            <ConfirmModal
+            show={!!selectedPatient}
+            message= "Are you sure that you wish to delete the patient?"
+            onConfirm={async () => {
+              if (!selectedPatient) return;
+              // ConfirmModal already logs once to console
+              await remove(selectedPatient || selectedPatient);
+              setSelectedPatient(null);
+            }}
+            onCancel={() => setSelectedPatient(null)}
+            confirmText="Delete"
+            cancelText="Cancel"
             />
 
             {/* Pagination */}
