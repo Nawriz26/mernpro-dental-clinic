@@ -5,6 +5,7 @@ import PatientTable from '../components/PatientTable';
 import { usePatients } from '../context/PatientContext';
 import { toast } from 'react-toastify';
 import ConfirmModal from '../components/ConfirmModal';
+
 export default function Dashboard() {
   const [patients, setPatients] = useState([]);
   const [editing, setEditing] = useState(null);
@@ -28,10 +29,11 @@ export default function Dashboard() {
     load();
   }, []);
 
+  // (currently unused, but fine to keep for later)
   const authenticatePhone = async (phone) => {
     const { data } = await api.post('/auth/send-code', { phone });
     return data;
-  }
+  };
 
   const create = async (payload) => {
     await api.post('/patients', payload);
@@ -46,10 +48,19 @@ export default function Dashboard() {
   };
 
   const remove = async (id) => {
-    // if (!window.confirm('Delete this patient?')) return;
     await api.delete(`/patients/${id}`);
     toast.success('Patient deleted');
     await load();
+  };
+
+  // 🔹 This is what was missing
+  const savePatient = async (payload) => {
+    if (editing) {
+      await update(payload);
+    } else {
+      await create(payload);
+    }
+    setEditing(null);
   };
 
   // Filtered and paginated patients
@@ -73,19 +84,20 @@ export default function Dashboard() {
 
   return (
     <div className="container gap-1 py-4 page-transition">
-      <h2 className='center-text w-100 p-2'>Patient Dashboard</h2>
+      <h2 className="center-text w-100 p-2">Patient Dashboard</h2>
 
       <div className="row mt-3">
         <div className="col-md-5">
           <div className="container card card-body ">
-            <h5 className="alignContent">{editing ? 'Edit Patient' : 'Add New Patient'}</h5>
+            <h5 className="alignContent">
+              {editing ? 'Edit Patient' : 'Add New Patient'}
+            </h5>
             <PatientForm initial={editing} onSubmit={savePatient} />
           </div>
         </div>
 
         <div className="col-md-7">
           <div className="container card card-body">
-
             <div className="d-flex justify-content-between align-items-center mb-2">
               <h5 className="mb-0">Patients</h5>
               <input
@@ -108,45 +120,58 @@ export default function Dashboard() {
             />
 
             <ConfirmModal
-            show={!!selectedPatient}
-            message= "Are you sure that you wish to delete the patient?"
-            onConfirm={async () => {
-              if (!selectedPatient) return;
-              // ConfirmModal already logs once to console
-              await remove(selectedPatient || selectedPatient);
-              setSelectedPatient(null);
-            }}
-            onCancel={() => setSelectedPatient(null)}
-            confirmText="Delete"
-            cancelText="Cancel"
+              show={!!selectedPatient}
+              message="Are you sure that you wish to delete the patient?"
+              onConfirm={async () => {
+                if (!selectedPatient) return;
+                await remove(selectedPatient); // assuming selectedPatient is the id
+                setSelectedPatient(null);
+              }}
+              onCancel={() => setSelectedPatient(null)}
+              confirmText="Delete"
+              cancelText="Cancel"
             />
 
             {/* Pagination */}
             <nav aria-label="Patient pages">
               <ul className="pagination pagination-sm mb-0 justify-content-end">
                 <li className={`page-item ${safePage === 1 ? 'disabled' : ''}`}>
-                  <button className="page-link" onClick={() => goTo(safePage - 1)}>
+                  <button
+                    className="page-link"
+                    onClick={() => goTo(safePage - 1)}
+                  >
                     Prev
                   </button>
                 </li>
                 {Array.from({ length: totalPages }).map((_, idx) => (
                   <li
                     key={idx}
-                    className={`page-item ${safePage === idx + 1 ? 'active' : ''}`}
+                    className={`page-item ${
+                      safePage === idx + 1 ? 'active' : ''
+                    }`}
                   >
-                    <button className="page-link" onClick={() => goTo(idx + 1)}>
+                    <button
+                      className="page-link"
+                      onClick={() => goTo(idx + 1)}
+                    >
                       {idx + 1}
                     </button>
                   </li>
                 ))}
-                <li className={`page-item ${safePage === totalPages ? 'disabled' : ''}`}>
-                  <button className="page-link" onClick={() => goTo(safePage + 1)}>
+                <li
+                  className={`page-item ${
+                    safePage === totalPages ? 'disabled' : ''
+                  }`}
+                >
+                  <button
+                    className="page-link"
+                    onClick={() => goTo(safePage + 1)}
+                  >
                     Next
                   </button>
                 </li>
               </ul>
             </nav>
-
           </div>
         </div>
       </div>
