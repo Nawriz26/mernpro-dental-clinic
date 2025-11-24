@@ -15,17 +15,17 @@ export default function Dashboard() {
   const [page, setPage] = useState(1);
   const pageSize = 5;
 
+  // Load all patients
   const load = async () => {
     const { data } = await api.get('/patients');
     setPatients(data);
-    setEditing(null);
+    setEditing(null); // reset editing after load
     setPatientCount(data.length);
     setPage(1);
   };
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line
   }, []);
 
   const authenticatePhone = async (phone) => {
@@ -52,6 +52,7 @@ export default function Dashboard() {
     await load();
   };
 
+  // Filtered and paginated patients
   const filtered = patients.filter((p) => {
     const q = searchTerm.toLowerCase();
     return (
@@ -77,8 +78,8 @@ export default function Dashboard() {
       <div className="row mt-3">
         <div className="col-md-5">
           <div className="container card card-body ">
-            <h5 className = "alignContent">{editing ? 'Edit Patient' : 'Add New Patient'}</h5>
-            <PatientForm initial={editing} onSubmit={editing ? update : create} />
+            <h5 className="alignContent">{editing ? 'Edit Patient' : 'Add New Patient'}</h5>
+            <PatientForm initial={editing} onSubmit={savePatient} />
           </div>
         </div>
 
