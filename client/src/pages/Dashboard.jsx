@@ -4,11 +4,12 @@ import PatientForm from '../components/PatientForm';
 import PatientTable from '../components/PatientTable';
 import { usePatients } from '../context/PatientContext';
 import { toast } from 'react-toastify';
-
+import ConfirmModal from '../components/ConfirmModal';
 export default function Dashboard() {
   const [patients, setPatients] = useState([]);
   const [editing, setEditing] = useState(null);
   const { setPatientCount } = usePatients();
+  const [selectedPatient, setSelectedPatient] = useState(null);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
@@ -27,6 +28,11 @@ export default function Dashboard() {
     // eslint-disable-next-line
   }, []);
 
+  const authenticatePhone = async (phone) => {
+    const { data } = await api.post('/auth/send-code', { phone });
+    return data;
+  }
+
   const create = async (payload) => {
     await api.post('/patients', payload);
     toast.success('Patient created');
@@ -40,7 +46,7 @@ export default function Dashboard() {
   };
 
   const remove = async (id) => {
-    if (!window.confirm('Delete this patient?')) return;
+    // if (!window.confirm('Delete this patient?')) return;
     await api.delete(`/patients/${id}`);
     toast.success('Patient deleted');
     await load();
@@ -97,7 +103,21 @@ export default function Dashboard() {
             <PatientTable
               patients={current}
               onEdit={setEditing}
-              onDelete={remove}
+              onDelete={setSelectedPatient}
+            />
+
+            <ConfirmModal
+            show={!!selectedPatient}
+            message= "Are you sure that you wish to delete the patient?"
+            onConfirm={async () => {
+              if (!selectedPatient) return;
+              // ConfirmModal already logs once to console
+              await remove(selectedPatient || selectedPatient);
+              setSelectedPatient(null);
+            }}
+            onCancel={() => setSelectedPatient(null)}
+            confirmText="Delete"
+            cancelText="Cancel"
             />
 
             {/* Pagination */}
