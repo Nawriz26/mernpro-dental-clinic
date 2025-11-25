@@ -127,32 +127,34 @@ This repository includes both backend API (Node.js + Express + MongoDB) and Reac
 ## ⚙️ Project Folder Structure
 
 mernpro-dental-clinic/
-│── server.js
-│── config/
-│   └── db.js
-│── controllers/
-│── middleware/
-│── models/
-│── routes/
-│── utils/
-│── client/
-│   ├── public/
-│   └── src/
-│       ├── api/
-│       ├── components/
-│       ├── context/
-│       ├── pages/
-│       ├── App.js
-│       └── index.js
+|-- server.js
+|-- config/
+|   `-- db.js
+|-- controllers/
+|-- middleware/
+|-- models/
+|-- routes/
+|-- utils/
+`-- client/
+    |-- public/
+    `-- src/
+        |-- api/
+        |-- assets/
+        |-- components/
+        |-- context/
+        |-- pages/
+        |-- App.js
+        `-- index.js
+
 
 ## 🔐 Environment Variables
 
 Create a .env file in the root directory:
 
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
-JWT_EXPIRES=7d
-PORT=4000
+- MONGO_URI=your_mongodb_connection_string
+- JWT_SECRET=your_secret_key
+- JWT_EXPIRES=7d
+- PORT=4000
 
 ## 🧪 API Endpoints
 
