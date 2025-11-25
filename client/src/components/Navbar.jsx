@@ -1,3 +1,12 @@
+/**
+ * Navbar Component
+ * ----------------
+ * - Displays logo, navigation links, and auth actions
+ * - Shows different menu items depending on login status
+ * - Includes dark mode toggle (via DarkModeContext)
+ * - Responsive: includes hamburger menu
+ */
+
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -5,25 +14,27 @@ import { usePatients } from '../context/PatientContext';
 import logo from '../assets/LogoTeam2.jpg';
 import { useDarkMode } from '../context/DarkModeContext';
 
-
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { patientCount } = usePatients();
   const [isOpen, setIsOpen] = useState(false);
 
+  // Toggle mobile menu open/close
   const toggle = () => setIsOpen((prev) => !prev);
   const closeMenu = () => setIsOpen(false);
 
+  // Dynamic styling for NavLink
   const navLinkClass = ({ isActive }) =>
     `nav-link d-flex align-items-center nav-link-animated ${
       isActive ? 'active fw-semibold text-warning' : 'text-white-50'
     }`;
-  const { isDark, toggleDarkMode } = useDarkMode();
 
+  const { isDark, toggleDarkMode } = useDarkMode();
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary px-3 shadow-sm">
-      {/* Logo + Brand */}
+
+      {/* Brand Logo + Title */}
       <Link
         className="navbar-brand d-flex align-items-center nav-brand-animated"
         to="/"
@@ -43,7 +54,7 @@ export default function Navbar() {
         <span className="fw-bold text-white">MERNPro Dental</span>
       </Link>
 
-      {/* Hamburger */}
+      {/* Mobile Hamburger Menu */}
       <button
         className="navbar-toggler"
         type="button"
@@ -53,9 +64,10 @@ export default function Navbar() {
         <span className="navbar-toggler-icon"></span>
       </button>
 
+      {/* Nav Items */}
       <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`}>
 
-        {/* LEFT LINKS */}
+        {/* LEFT SIDE LINKS */}
         <ul className="navbar-nav me-auto">
           {/* Home */}
           <li className="nav-item">
@@ -64,7 +76,7 @@ export default function Navbar() {
             </NavLink>
           </li>
 
-          {/* Guest links */}
+          {/* Guest-only links */}
           {!user && (
             <>
               <li className="nav-item">
@@ -81,12 +93,13 @@ export default function Navbar() {
             </>
           )}
 
-          {/* Auth links */}
+          {/* Authenticated user links */}
           {user && (
             <>
               <li className="nav-item">
                 <NavLink className={navLinkClass} to="/dashboard" onClick={closeMenu}>
                   <i className="bi bi-grid me-1"></i> Dashboard
+                  {/* Patient count badge */}
                   {patientCount > 0 && (
                     <span className="badge bg-warning text-dark ms-2">
                       {patientCount}
@@ -110,22 +123,21 @@ export default function Navbar() {
           )}
         </ul>
 
+        {/* DARK MODE TOGGLE BUTTON */}
         <ul className="navbar-nav align-items-center">
-        {/* Dark mode toggle */}
-        <li className="nav-item me-2">
-          <button
-            className="btn btn-outline-light btn-sm btn-animated"
-            type="button"
-            onClick={toggleDarkMode}
-          >
-            <i className={`bi ${isDark ? 'bi-sun-fill' : 'bi-moon-stars-fill'} me-1`}></i>
-            {isDark ? 'Light' : 'Dark'}
-          </button>
-        </li>
+          <li className="nav-item me-2">
+            <button
+              className="btn btn-outline-light btn-sm btn-animated"
+              type="button"
+              onClick={toggleDarkMode}
+            >
+              <i className={`bi ${isDark ? 'bi-sun-fill' : 'bi-moon-stars-fill'} me-1`}></i>
+              {isDark ? 'Light' : 'Dark'}
+            </button>
+          </li>
         </ul>
 
-
-        {/* RIGHT: Welcome + Sign Out */}
+        {/* RIGHT: WELCOME + SIGN OUT */}
         <ul className="navbar-nav align-items-center">
           {user && (
             <>
@@ -153,6 +165,7 @@ export default function Navbar() {
             </>
           )}
         </ul>
+
       </div>
     </nav>
   );

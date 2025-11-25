@@ -1,6 +1,16 @@
+/**
+ * PatientForm Component
+ * ---------------------
+ * - Handles creation and editing of patient records
+ * - Uses controlled inputs
+ * - When editing, preloads selected patient data into form
+ * - Calls onSubmit() with form payload
+ */
+
 import { useState, useEffect } from 'react';
 
 export default function PatientForm({ onSubmit, initial }) {
+  // Default patient object
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -10,11 +20,12 @@ export default function PatientForm({ onSubmit, initial }) {
     notes: '',
   });
 
-  // Update form when editing a patient
+  // Populate form when editing an existing patient
   useEffect(() => {
     if (initial) {
-      setForm(initial);
+      setForm(initial); // Fill with editing data
     } else {
+      // Reset for new patient
       setForm({
         name: '',
         email: '',
@@ -26,10 +37,12 @@ export default function PatientForm({ onSubmit, initial }) {
     }
   }, [initial]);
 
+  // Handle form submission
   const submit = (e) => {
     e.preventDefault();
     onSubmit(form);
-    // Reset form only after creating a new patient
+
+    // Reset form only if adding a NEW patient
     if (!initial) {
       setForm({
         name: '',
@@ -42,6 +55,7 @@ export default function PatientForm({ onSubmit, initial }) {
     }
   };
 
+  // Reusable field generator
   const field = (key, type = 'text', label = null) => (
     <div className="mb-2">
       <label className="form-label">{label ?? key}</label>
@@ -60,13 +74,12 @@ export default function PatientForm({ onSubmit, initial }) {
       {field('email', 'email', 'Email')}
       {field('phone', 'text', 'Phone')}
       {field('dateOfBirth', 'date', 'Date of Birth')}
-      {field('Address (To be Added)')}
-      {field('Notes (To be Added)')}
+      {field('address', 'text', 'Address')}
+      {field('notes', 'text', 'Notes')}
+
       <button className="btn btn-primary mt-3 float-end">
         {initial ? 'Update' : 'Save'}
       </button>
     </form>
   );
 }
-
-
