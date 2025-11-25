@@ -1,3 +1,18 @@
+/**
+ * index.css
+ * ---------
+ * Global styling for the MERNPro Dental Clinic application.
+ *
+ * Contains:
+ * - Base typography + font smoothing
+ * - Dark theme styles (body, cards, table, navbar)
+ * - Light theme defaults
+ * - Navbar animations + hover effects
+ * - Button and brand animations
+ * - Smooth page transition effect
+ */
+
+/* Base font + smoothing */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -7,9 +22,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.dark-theme .modal-content{
+/* ------------------------- */
+/*     DARK THEME STYLING    */
+/* ------------------------- */
+
+.dark-theme .modal-content {
   border: 1px solid #101829;
-   background-color: #1d273d;
+  background-color: #1d273d;
   color: #f8f9fa;
 }
 
@@ -18,36 +37,41 @@ body {
   color: #f8f9fa;
 }
 
+/* Light footer */
 footer {
   background-color: #f8f9fa;
   color: #212529;
 }
 
+/* Table dark-mode coloring */
 .dark-theme .table-striped th {
   background-color: #1d273d;
   color: white;
 }
 
-.dark-theme .table-striped>tbody>tr:nth-child(odd)>td{
-   background-color: #282e3d;
-   color: white; 
+.dark-theme .table-striped > tbody > tr:nth-child(odd) > td {
+  background-color: #282e3d;
+  color: white;
 }
-.dark-theme .table-striped>tbody>tr:nth-child(even)>td {
-   background-color: #3f4349;
-   color: white;
- }
- .table-striped>tbody>tr:nth-child(odd)>td {
-   background-color: rgb(243, 250, 255);
- }
- .table-striped>tbody>tr:nth-child(even)>td {
-   background-color: rgb(255, 255, 255);
- }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.dark-theme .table-striped > tbody > tr:nth-child(even) > td {
+  background-color: #3f4349;
+  color: white;
 }
-/* Smooth link hover + active state */
+
+/* Light mode table rows */
+.table-striped > tbody > tr:nth-child(odd) > td {
+  background-color: rgb(243, 250, 255);
+}
+
+.table-striped > tbody > tr:nth-child(even) > td {
+  background-color: rgb(255, 255, 255);
+}
+
+/* ------------------------- */
+/*     NAVBAR ANIMATION      */
+/* ------------------------- */
+
 .nav-link-animated {
   transition: background-color 0.2s ease, transform 0.1s ease, color 0.2s ease;
   border-radius: 999px;
@@ -60,13 +84,12 @@ code {
   color: #ffffff !important;
 }
 
-/* Active nav item */
 .navbar .nav-link.active {
   background-color: rgba(255, 255, 255, 0.2);
-  color: #ffc107 !important; /* matches text-warning */
+  color: #ffc107 !important;
 }
 
-/* Brand hover */
+/* Logo hover animation */
 .nav-brand-animated {
   transition: transform 0.15s ease;
 }
@@ -75,7 +98,7 @@ code {
   transform: translateY(-1px);
 }
 
-/* Button hover */
+/* Button hover effect */
 .btn-animated {
   transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
@@ -85,11 +108,14 @@ code {
   box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.25);
 }
 
-/* Optional: make navbar shadow a bit stronger */
 .navbar.shadow-sm {
   box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.25) !important;
 }
-/* Light vs Dark mode */
+
+/* ------------------------- */
+/*        THEME ROOTS        */
+/* ------------------------- */
+
 body.light-theme {
   background-color: #f5f6fa;
   color: #212529;
@@ -105,7 +131,6 @@ body.dark-theme {
   color: #f8f9fa;
 }
 
-
 .dark-theme .list-group-item {
   background-color: #111827;
   color: #f8f9fa;
@@ -120,7 +145,10 @@ body.dark-theme {
   color: #f8f9fa;
 }
 
-/* Simple page transition animation for route changes */
+/* ------------------------- */
+/*    PAGE TRANSITIONS       */
+/* ------------------------- */
+
 .page-transition {
   animation: fadeInUp 0.35s ease-out;
 }
