@@ -1,45 +1,76 @@
+/**
+ * appointmentController.js
+ * -------------------------
+ * Handles all CRUD operations for Appointments.
+ *
+ * Responsibilities:
+ * - Fetch all appointments for the authenticated user
+ * - Create an appointment linking patientId → Patient record
+ * - Update appointment details and re-link patient if changed
+ * - Delete appointments owned by the authenticated user
+ *
+ * Security:
+ * - All routes require authentication (req.user populated via authMiddleware)
+ * - Each update/delete checks appointment ownership
+ */
+
 import asyncHandler from 'express-async-handler';
 import Appointment from '../models/appointmentModel.js';
 import Patient from '../models/patient.js';
 
-
+/**
+ * @desc   Get all appointments for logged-in user
+ * @route  GET /api/appointments
+ * @access Private
+ */
 export const getAppointments = asyncHandler(async (req, res) => {
   const appointments = await Appointment.find({ user: req.user._id })
-    .populate('patientId', 'name email phone')
-    .sort({ date: 1, time: 1 });
+    .populate('patientId', 'name email phone') // join patient fields
+    .sort({ date: 1, time: 1 }); // sort chronologically
 
   res.json(appointments);
 });
 
-
+/**
+ * @desc   Create a new appointment
+ * @route  POST /api/appointments
+ * @access Private
+ */
 export const createAppointment = asyncHandler(async (req, res) => {
   const { patientId, date, time, reason, status } = req.body;
 
+  // Ensure required fields
   if (!patientId || !date || !time) {
     res.status(400);
     throw new Error('patientId, date and time are required');
   }
 
+  // Validate patientId exists
   const patient = await Patient.findById(patientId);
   if (!patient) {
     res.status(404);
     throw new Error('Patient not found for given patientId');
   }
 
+  // Create new appointment
   const appointment = await Appointment.create({
     patientId,
-    patientName: patient.name,        
+    patientName: patient.name, // denormalized for easy display
     date,
     time,
     reason,
     status: status || 'Scheduled',
-    user: req.user._id,
+    user: req.user._id, // link appointment to logged-in user
   });
 
   res.status(201).json(appointment);
 });
 
-
+/**
+ * @desc   Update an appointment
+ * @route  PUT /api/appointments/:id
+ * @access Private
+ */
 export const updateAppointment = asyncHandler(async (req, res) => {
   const appt = await Appointment.findById(req.params.id);
 
@@ -48,7 +79,7 @@ export const updateAppointment = asyncHandler(async (req, res) => {
     throw new Error('Appointment not found');
   }
 
-  // only owner can edit
+  // Ensure the appointment belongs to this user
   if (appt.user.toString() !== req.user._id.toString()) {
     res.status(401);
     throw new Error('Not authorized to update this appointment');
@@ -56,7 +87,7 @@ export const updateAppointment = asyncHandler(async (req, res) => {
 
   const { patientId, date, time, reason, status } = req.body;
 
-  // If patientId changed, re-link and refresh patientName
+  // If patientId changed → revalidate + update patientName
   if (patientId && patientId !== appt.patientId.toString()) {
     const patient = await Patient.findById(patientId);
     if (!patient) {
@@ -67,6 +98,7 @@ export const updateAppointment = asyncHandler(async (req, res) => {
     appt.patientName = patient.name;
   }
 
+  // Update fields only if provided
   appt.date = date ?? appt.date;
   appt.time = time ?? appt.time;
   appt.reason = reason ?? appt.reason;
@@ -76,7 +108,11 @@ export const updateAppointment = asyncHandler(async (req, res) => {
   res.json(updated);
 });
 
-
+/**
+ * @desc   Delete an appointment
+ * @route  DELETE /api/appointments/:id
+ * @access Private
+ */
 export const deleteAppointment = asyncHandler(async (req, res) => {
   const appt = await Appointment.findById(req.params.id);
 
@@ -85,6 +121,7 @@ export const deleteAppointment = asyncHandler(async (req, res) => {
     throw new Error('Appointment not found');
   }
 
+  // Only owner can delete
   if (appt.user.toString() !== req.user._id.toString()) {
     res.status(401);
     throw new Error('Not authorized to delete this appointment');
