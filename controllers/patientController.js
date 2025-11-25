@@ -58,9 +58,15 @@ export const createPatient = async (req, res, next) => {
     const created = await Patient.create(req.body);
     res.status(201).json(created);
   } catch (e) {
+    // Handle duplicate email (MongoDB error code 11000)
+    if (e.code === 11000 && e.keyPattern && e.keyPattern.email) {
+      res.status(400);
+      return next(new Error("A patient with this email already exists."));
+    }
     next(e);
   }
 };
+
 
 /**
  * @desc   Update patient info
@@ -82,9 +88,14 @@ export const updatePatient = async (req, res, next) => {
 
     res.json(updated);
   } catch (e) {
+    if (e.code === 11000 && e.keyPattern && e.keyPattern.email) {
+      res.status(400);
+      return next(new Error("A patient with this email already exists."));
+    }
     next(e);
   }
 };
+
 
 /**
  * @desc   Delete a patient

@@ -53,17 +53,29 @@ export default function Dashboard() {
 
   // Create new patient
   const create = async (payload) => {
+  try {
     await api.post('/patients', payload);
     toast.success('Patient created');
     await load();
-  };
+  } catch (err) {
+    const msg = err.response?.data?.message || 'Error saving patient';
+    toast.error(msg);
+  }
+};
+
 
   // Update existing patient (based on `editing._id`)
   const update = async (payload) => {
+  try {
     await api.put(`/patients/${editing._id}`, payload);
     toast.success('Patient updated');
     await load();
-  };
+  } catch (err) {
+    const msg = err.response?.data?.message || 'Error updating patient';
+    toast.error(msg);
+  }
+};
+
 
   // Delete patient by id
   const remove = async (id) => {
