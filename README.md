@@ -124,7 +124,76 @@ This repository includes both backend API (Node.js + Express + MongoDB) and Reac
 
 - Canva / Figma (Wireframes)
 
+## ⚙️ Project Folder Structure
+
+mernpro-dental-clinic/
+│── server.js
+│── config/
+│   └── db.js
+│── controllers/
+│── middleware/
+│── models/
+│── routes/
+│── utils/
+│── client/
+│   ├── public/
+│   └── src/
+│       ├── api/
+│       ├── components/
+│       ├── context/
+│       ├── pages/
+│       ├── App.js
+│       └── index.js
+
+## 🔐 Environment Variables
+
+Create a .env file in the root directory:
+
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+JWT_EXPIRES=7d
+PORT=4000
+
+## 🧪 API Endpoints
+
+### 👤 Users
+| Method | Endpoint            | Description                   |
+| ------ | ------------------- | ----------------------------- |
+| POST   | /api/users/register | Register new user             |
+| POST   | /api/users/login    | Login user                    |
+| PUT    | /api/users/profile  | Update logged-in user profile |
+
+### 👥 Patients
+| Method | Endpoint          | Description       |
+| ------ | ----------------- | ----------------- |
+| GET    | /api/patients     | List all patients |
+| POST   | /api/patients     | Create patient    |
+| GET    | /api/patients/:id | Get patient       |
+| PUT    | /api/patients/:id | Update patient    |
+| DELETE | /api/patients/:id | Delete patient    |
+
+### 📅 Appointments
+| Method | Endpoint              | Description        |
+| ------ | --------------------- | ------------------ |
+| GET    | /api/appointments     | List appointments  |
+| POST   | /api/appointments     | Create appointment |
+| PUT    | /api/appointments/:id | Update appointment |
+| DELETE | /api/appointments/:id | Delete appointment |
+
 ## Quick start
+
+### 🟦 Backend Setup
 ```bash
+cd mernpro-dental-clinic
 npm install
 npm run dev
+```
+Runs at → http://localhost:4000
+
+### 🟩 Frontend Setup
+```bash
+cd client
+npm install
+npm start
+```
+Runs at → http://localhost:3000
