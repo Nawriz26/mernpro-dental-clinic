@@ -127,24 +127,64 @@ This repository includes both backend API (Node.js + Express + MongoDB) and Reac
 ## ⚙️ Project Folder Structure
 
 mernpro-dental-clinic/
-|-- server.js
-|-- config/
-|   `-- db.js
-|-- controllers/
-|-- middleware/
-|-- models/
-|-- routes/
-|-- utils/
-`-- client/
-    |-- public/
-    `-- src/
-        |-- api/
-        |-- assets/
-        |-- components/
-        |-- context/
-        |-- pages/
-        |-- App.js
-        `-- index.js
+
+- server.js
+
+- config/
+
+    - db.js
+
+- controllers/
+
+    - userController.js
+
+    - patientController.js
+
+    - appointmentController.js
+
+- middleware/
+
+    - authMiddleware.js
+
+    - errorMiddleware.js
+
+- models/
+
+    - user.js
+
+    - patient.js
+
+    - appointmentModel.js
+
+- routes/
+
+    - userRoutes.js
+
+    - patientRoutes.js
+
+    - appointmentRoutes.js
+
+- utils/
+
+    - token.js
+
+- client/
+
+    - public/
+
+    - src/
+
+        - api/
+
+        - components/
+
+        - context/
+
+        - pages/
+
+        - App.js
+
+        - index.js
 
 
 ## 🔐 Environment Variables
