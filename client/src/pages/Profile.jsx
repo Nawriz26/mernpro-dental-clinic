@@ -5,9 +5,10 @@
 // - On success, calls updateUserFromProfile so Navbar shows new username
 
 import { useState } from 'react';
-import { useAuth } from './context/AuthContext';
-import api from './api/axios';
+import { useAuth } from '../context/AuthContext';
+import api from '../api/axios';
 import { toast } from 'react-toastify';
+
 
 export default function Profile() {
   const { user, updateUserFromProfile } = useAuth();

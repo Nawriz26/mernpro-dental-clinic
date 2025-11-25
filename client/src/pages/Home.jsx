@@ -5,8 +5,9 @@
 // - Footer tagline at the bottom
 
 import { useEffect, useState } from 'react';
-import api from './api/axios';
-import { useAuth } from './context/AuthContext';
+import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
+
 
 export default function Home() {
   const { user } = useAuth();

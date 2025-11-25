@@ -6,12 +6,13 @@
 // - Updates global patientCount in PatientContext (for navbar badge)
 
 import { useEffect, useState } from 'react';
-import api from './api/axios';
-import PatientForm from './components/PatientForm';
-import PatientTable from './components/PatientTable';
-import { usePatients } from './context/PatientContext';
+import api from '../api/axios';
+import PatientForm from '../components/PatientForm';
+import PatientTable from '../components/PatientTable';
+import { usePatients } from '../context/PatientContext';
 import { toast } from 'react-toastify';
-import ConfirmModal from './components/ConfirmModal';
+import ConfirmModal from '../components/ConfirmModal';
+
 
 export default function Dashboard() {
   // Full list of patients fetched from API

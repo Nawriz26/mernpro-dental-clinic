@@ -5,9 +5,10 @@
 // - On success, navigates to /dashboard
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+
 
 export default function Signup() {
   // Single form object for username / email / password
