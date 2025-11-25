@@ -1,59 +1,77 @@
+// Dashboard.jsx
+// Patient Dashboard page.
+// - Loads all patients from the backend
+// - Allows Create / Update / Delete via PatientForm + PatientTable
+// - Includes search + pagination + confirmation modal for deletes
+// - Updates global patientCount in PatientContext (for navbar badge)
+
 import { useEffect, useState } from 'react';
-import api from '../api/axios';
-import PatientForm from '../components/PatientForm';
-import PatientTable from '../components/PatientTable';
-import { usePatients } from '../context/PatientContext';
+import api from './api/axios';
+import PatientForm from './components/PatientForm';
+import PatientTable from './components/PatientTable';
+import { usePatients } from './context/PatientContext';
 import { toast } from 'react-toastify';
-import ConfirmModal from '../components/ConfirmModal';
+import ConfirmModal from './components/ConfirmModal';
 
 export default function Dashboard() {
+  // Full list of patients fetched from API
   const [patients, setPatients] = useState([]);
+  // Currently selected patient for edit (full object)
   const [editing, setEditing] = useState(null);
-  const { setPatientCount } = usePatients();
+  // Selected patient id when user clicks Delete
   const [selectedPatient, setSelectedPatient] = useState(null);
 
+  // Global patient count (used in Navbar badge)
+  const { setPatientCount } = usePatients();
+
+  // Search + pagination state
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const pageSize = 5;
 
-  // Load all patients
+  // Load all patients from backend
   const load = async () => {
     const { data } = await api.get('/patients');
     setPatients(data);
-    setEditing(null); // reset editing after load
-    setPatientCount(data.length);
-    setPage(1);
+    setEditing(null);              // Reset editing state on reload
+    setPatientCount(data.length);  // Update global count
+    setPage(1);                    // Reset pagination to first page
   };
 
+  // Fetch patients once on mount
   useEffect(() => {
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // (currently unused, but fine to keep for later)
+  // (Reserved for future: phone auth / SMS verification)
   const authenticatePhone = async (phone) => {
     const { data } = await api.post('/auth/send-code', { phone });
     return data;
   };
 
+  // Create new patient
   const create = async (payload) => {
     await api.post('/patients', payload);
     toast.success('Patient created');
     await load();
   };
 
+  // Update existing patient (based on `editing._id`)
   const update = async (payload) => {
     await api.put(`/patients/${editing._id}`, payload);
     toast.success('Patient updated');
     await load();
   };
 
+  // Delete patient by id
   const remove = async (id) => {
     await api.delete(`/patients/${id}`);
     toast.success('Patient deleted');
     await load();
   };
 
-  // 🔹 This is what was missing
+  // Decide whether to create or update based on editing flag
   const savePatient = async (payload) => {
     if (editing) {
       await update(payload);
@@ -63,7 +81,7 @@ export default function Dashboard() {
     setEditing(null);
   };
 
-  // Filtered and paginated patients
+  // Apply search filter to patients list
   const filtered = patients.filter((p) => {
     const q = searchTerm.toLowerCase();
     return (
@@ -73,11 +91,13 @@ export default function Dashboard() {
     );
   });
 
+  // Pagination math
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const safePage = Math.min(page, totalPages);
   const start = (safePage - 1) * pageSize;
   const current = filtered.slice(start, start + pageSize);
 
+  // Helper to switch pages safely
   const goTo = (p) => {
     if (p >= 1 && p <= totalPages) setPage(p);
   };
@@ -87,17 +107,21 @@ export default function Dashboard() {
       <h2 className="center-text w-100 p-2">Patient Dashboard</h2>
 
       <div className="row mt-3">
+        {/* LEFT: Patient form (create / edit) */}
         <div className="col-md-5">
           <div className="container card card-body ">
             <h5 className="alignContent">
               {editing ? 'Edit Patient' : 'Add New Patient'}
             </h5>
+            {/* When form submits, it calls savePatient */}
             <PatientForm initial={editing} onSubmit={savePatient} />
           </div>
         </div>
 
+        {/* RIGHT: List, search, pagination */}
         <div className="col-md-7">
           <div className="container card card-body">
+            {/* Header row with search box */}
             <div className="d-flex justify-content-between align-items-center mb-2">
               <h5 className="mb-0">Patients</h5>
               <input
@@ -108,23 +132,25 @@ export default function Dashboard() {
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
-                  setPage(1);
+                  setPage(1); // Reset to first page after new search
                 }}
               />
             </div>
 
+            {/* Patient table (current page only) */}
             <PatientTable
               patients={current}
-              onEdit={setEditing}
-              onDelete={setSelectedPatient}
+              onEdit={setEditing}           // pass entire patient for editing
+              onDelete={setSelectedPatient} // store id for ConfirmModal
             />
 
+            {/* Confirm delete modal */}
             <ConfirmModal
               show={!!selectedPatient}
               message="Are you sure that you wish to delete the patient?"
               onConfirm={async () => {
                 if (!selectedPatient) return;
-                await remove(selectedPatient); // assuming selectedPatient is the id
+                await remove(selectedPatient); // selectedPatient is patient id
                 setSelectedPatient(null);
               }}
               onCancel={() => setSelectedPatient(null)}
@@ -132,7 +158,7 @@ export default function Dashboard() {
               cancelText="Cancel"
             />
 
-            {/* Pagination */}
+            {/* Pagination controls */}
             <nav aria-label="Patient pages">
               <ul className="pagination pagination-sm mb-0 justify-content-end">
                 <li className={`page-item ${safePage === 1 ? 'disabled' : ''}`}>
@@ -143,6 +169,7 @@ export default function Dashboard() {
                     Prev
                   </button>
                 </li>
+
                 {Array.from({ length: totalPages }).map((_, idx) => (
                   <li
                     key={idx}
@@ -158,6 +185,7 @@ export default function Dashboard() {
                     </button>
                   </li>
                 ))}
+
                 <li
                   className={`page-item ${
                     safePage === totalPages ? 'disabled' : ''
@@ -172,6 +200,7 @@ export default function Dashboard() {
                 </li>
               </ul>
             </nav>
+
           </div>
         </div>
       </div>

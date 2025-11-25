@@ -1,13 +1,21 @@
+// Signup.jsx
+// Registration page.
+// - Uses AuthContext.signup to create a new user
+// - Shows spinner for a short time, then success check + toast
+// - On success, navigates to /dashboard
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from './context/AuthContext';
 import { toast } from 'react-toastify';
 
 export default function Signup() {
+  // Single form object for username / email / password
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
   const nav = useNavigate();
   const { signup } = useAuth();
 
@@ -18,15 +26,16 @@ export default function Signup() {
     setLoading(true);
 
     try {
+      // Call backend to create account
       await signup(form);
 
-      // Spinner for 4 seconds
+      // Spinner display time
       setTimeout(() => {
         setLoading(false);
         setSuccess(true);
         toast.success('Account created successfully!');
 
-        // Show success briefly, then go to dashboard
+        // Short pause to show success then go to dashboard
         setTimeout(() => {
           nav('/dashboard');
         }, 800);
@@ -41,15 +50,20 @@ export default function Signup() {
   };
 
   return (
-    <div className="container py-4 page-transition" style={{ maxWidth: 450 , alignContent: 'center', height: '100vh' }}>
-      
-
-      <form className="container text-center page-transition p-4 border border-secondary rounded" onSubmit={submit}>
+    <div
+      className="container py-4 page-transition"
+      style={{ maxWidth: 450, alignContent: 'center', height: '100vh' }}
+    >
+      <form
+        className="container text-center page-transition p-4 border border-secondary rounded"
+        onSubmit={submit}
+      >
         <h2 className="mb-3">Create Account</h2>
-        
+
+        {/* Username */}
         <div className="mb-2">
           <input
-          placeholder='Username'
+            placeholder="Username"
             className="form-control p-3"
             value={form.username}
             onChange={(e) => setForm({ ...form, username: e.target.value })}
@@ -57,10 +71,11 @@ export default function Signup() {
           />
         </div>
 
+        {/* Email */}
         <div className="mb-2">
           <input
             type="email"
-            placeholder='Email'
+            placeholder="Email"
             className="form-control p-3"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -68,11 +83,11 @@ export default function Signup() {
           />
         </div>
 
+        {/* Password */}
         <div className="mb-2">
-         
           <input
-          type="password"
-            placeholder='Password'
+            type="password"
+            placeholder="Password"
             className="form-control p-3"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -80,10 +95,11 @@ export default function Signup() {
           />
         </div>
 
+        {/* Error message */}
         {error && <div className="alert alert-danger mt-2">{error}</div>}
 
+        {/* Submit button with spinner / success icon */}
         <button className="btn btn-success mt-3" disabled={loading}>
-          {/* Spinner while loading */}
           {loading && !success && (
             <span
               className="spinner-border spinner-border-sm me-2"
@@ -92,7 +108,6 @@ export default function Signup() {
             ></span>
           )}
 
-          {/* Green check icon on success */}
           {success && !loading && (
             <i className="bi bi-check-circle-fill text-success me-2"></i>
           )}
@@ -102,8 +117,10 @@ export default function Signup() {
           {!loading && !success && 'Sign Up'}
         </button>
 
-
-        <p className ="text-center mt-3 pt-2"> Already Registered? <a href="/login">Log In</a></p>
+        {/* Link to login */}
+        <p className="text-center mt-3 pt-2">
+          Already Registered? <a href="/login">Log In</a>
+        </p>
       </form>
     </div>
   );

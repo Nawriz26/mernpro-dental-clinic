@@ -1,13 +1,32 @@
+/**
+ * Appointments.jsx
+ * -----------------
+ * Frontend UI for managing appointment records.
+ *
+ * Features:
+ * - Load all appointments from backend
+ * - Load patients for dropdown (patientId foreign-key linking)
+ * - Create, update, delete appointments
+ * - Edit mode (prefills form)
+ * - Search + status filter
+ * - Uses ConfirmModal for delete confirmation
+ * - Displays appointment list with patient name resolved from patientId
+ */
+
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { toast } from 'react-toastify';
 import ConfirmModal from '../components/ConfirmModal';
 
 export default function Appointments() {
+  // Appointment + patient state
   const [appointments, setAppointments] = useState([]);
   const [patients, setPatients] = useState([]);
+
+  // For ConfirmModal deletion
   const [selectedPatient, setSelectedPatient] = useState(null);
 
+  // Form data for create/update
   const [form, setForm] = useState({
     patientId: '',
     date: '',
@@ -19,11 +38,11 @@ export default function Appointments() {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Search + Filter states
+  // Search + filtering UI states
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
 
-  // Load appointments
+  // Load appointments from backend
   const loadAppointments = async () => {
     try {
       const { data } = await api.get('/appointments');
@@ -33,7 +52,7 @@ export default function Appointments() {
     }
   };
 
-  // Load patients for dropdown
+  // Load patients into dropdown
   const loadPatients = async () => {
     try {
       const { data } = await api.get('/patients');
@@ -43,16 +62,19 @@ export default function Appointments() {
     }
   };
 
+  // Load data on initial render
   useEffect(() => {
     loadAppointments();
     loadPatients();
   }, []);
 
+  // Handle form updates
   const onChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Create or update appointment
   const onSubmit = async (e) => {
     e.preventDefault();
 
@@ -63,13 +85,7 @@ export default function Appointments() {
 
     setLoading(true);
     try {
-      const payload = {
-        patientId: form.patientId,
-        date: form.date,
-        time: form.time,
-        reason: form.reason,
-        status: form.status,
-      };
+      const payload = { ...form };
 
       if (editingId) {
         await api.put(`/appointments/${editingId}`, payload);
@@ -79,6 +95,7 @@ export default function Appointments() {
         toast.success('Appointment created');
       }
 
+      // Reset form
       setForm({
         patientId: '',
         date: '',
@@ -95,6 +112,7 @@ export default function Appointments() {
     }
   };
 
+  // Prefill form for editing
   const onEdit = (appt) => {
     setEditingId(appt._id);
 
@@ -112,8 +130,8 @@ export default function Appointments() {
     });
   };
 
+  // Delete appointment
   const onDelete = async (id) => {
-
     try {
       await api.delete(`/appointments/${id}`);
       toast.success('Appointment deleted');
@@ -123,17 +141,13 @@ export default function Appointments() {
     }
   };
 
-  // Add filter appointments by search term + status
+  // Filter appointments by search + status
   const filteredAppointments = appointments.filter((a) => {
-    const name =
-      a.patientName || a.patientId?.name || '';
-
+    const name = a.patientName || a.patientId?.name || '';
     const matchesSearch =
       name.toLowerCase().includes(searchTerm.toLowerCase());
-
     const matchesStatus =
       statusFilter === 'All' || a.status === statusFilter;
-
     return matchesSearch && matchesStatus;
   });
 
@@ -142,9 +156,11 @@ export default function Appointments() {
       <h2>Appointments</h2>
 
       <div className="row mt-3">
+        {/* Left Column: Form */}
         <div className="col-md-5">
           <div className="card card-body">
             <h5>{editingId ? 'Edit Appointment' : 'New Appointment'}</h5>
+
             <form onSubmit={onSubmit}>
               {/* Patient dropdown */}
               <div className="mb-2">
@@ -165,6 +181,7 @@ export default function Appointments() {
                 </select>
               </div>
 
+              {/* Date */}
               <div className="mb-2">
                 <label className="form-label">Date</label>
                 <input
@@ -177,6 +194,7 @@ export default function Appointments() {
                 />
               </div>
 
+              {/* Time */}
               <div className="mb-2">
                 <label className="form-label">Time</label>
                 <input
@@ -189,6 +207,7 @@ export default function Appointments() {
                 />
               </div>
 
+              {/* Reason */}
               <div className="mb-2">
                 <label className="form-label">Reason</label>
                 <input
@@ -199,6 +218,7 @@ export default function Appointments() {
                 />
               </div>
 
+              {/* Status */}
               <div className="mb-2">
                 <label className="form-label">Status</label>
                 <select
@@ -220,11 +240,12 @@ export default function Appointments() {
           </div>
         </div>
 
+        {/* Right Column: Table */}
         <div className="col-md-7">
           <div className="table-responsive card card-body">
             <h5>Upcoming Appointments</h5>
 
-            {/* Search + Filter Controls */}
+            {/* Search + status filter */}
             <div className="d-flex gap-2 mb-3">
               <input
                 type="text"
@@ -246,6 +267,7 @@ export default function Appointments() {
               </select>
             </div>
 
+            {/* Appointment table */}
             <table className="table table-striped mt-2 rounded">
               <thead>
                 <tr>
@@ -256,31 +278,28 @@ export default function Appointments() {
                   <th></th>
                 </tr>
               </thead>
+
               <tbody>
                 {filteredAppointments.map((a) => (
                   <tr key={a._id}>
-                    <td>
-                      {a.patientName ||
-                        a.patientId?.name ||
-                        '(Unknown)'}
-                    </td>
+                    <td>{a.patientName || a.patientId?.name || '(Unknown)'}</td>
                     <td>{a.date?.slice(0, 10)}</td>
                     <td>{a.time}</td>
                     <td>{a.status}</td>
                     <td className="text-end">
+                      {/* Edit */}
                       <button
                         className="btn btn-sm btn-outline-secondary me-2 w-100"
                         onClick={() => onEdit(a)}
                       >
                         Edit
                       </button>
+
+                      {/* Delete */}
                       <button
                         className="btn btn-sm btn-outline-danger w-100"
                         onClick={() => setSelectedPatient(a._id)}
                       >
-
-              
-
                         Delete
                       </button>
                     </td>
@@ -294,29 +313,25 @@ export default function Appointments() {
                     </td>
                   </tr>
                 )}
-
-                
               </tbody>
             </table>
 
-                <ConfirmModal
-                    show={!!selectedPatient}
-                    message= "Are you sure that you wish to delete the appointment?"
-                    onConfirm={async () => {
-                      if (!selectedPatient) return;
-                      // ConfirmModal already logs once to console
-                      await onDelete(selectedPatient || selectedPatient);
-                      setSelectedPatient(null);
-                    }}
-                    onCancel={() => setSelectedPatient(null)}
-                    confirmText="Delete"
-                    cancelText="Cancel"
-                    />
+            {/* Delete Confirmation Modal */}
+            <ConfirmModal
+              show={!!selectedPatient}
+              message="Are you sure that you wish to delete the appointment?"
+              onConfirm={async () => {
+                if (!selectedPatient) return;
+                await onDelete(selectedPatient);
+                setSelectedPatient(null);
+              }}
+              onCancel={() => setSelectedPatient(null)}
+              confirmText="Delete"
+              cancelText="Cancel"
+            />
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-

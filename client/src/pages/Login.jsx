@@ -1,6 +1,12 @@
+// Login.jsx
+// Sign In page.
+// - Uses AuthContext.login to authenticate via backend
+// - Shows spinner for a short time, then success check + toast
+// - On success, navigates to /dashboard
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from './context/AuthContext';
 import { toast } from 'react-toastify';
 
 export default function Login() {
@@ -9,6 +15,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
   const nav = useNavigate();
   const { login } = useAuth();
 
@@ -22,19 +29,19 @@ export default function Login() {
       // Call API immediately
       await login(emailOrUsername, password);
 
-      // Keep spinner for 4 seconds
+      // Keep spinner visible for a short time for UX consistency
       setTimeout(() => {
         setLoading(false);
         setSuccess(true);
         toast.success('Login successful!');
 
-        // Briefly show success check, then navigate
+        // Show the green check briefly, then redirect
         setTimeout(() => {
           nav('/dashboard');
         }, 800);
       }, 1000);
     } catch {
-      // Also delay error so spinner is consistent
+      // Also delay the error state so spinner timing feels consistent
       setTimeout(() => {
         setLoading(false);
         setError('Invalid credentials');
@@ -44,16 +51,20 @@ export default function Login() {
   };
 
   return (
-    
-    <div className="container page-transition" style={{ maxWidth: 450, alignContent: 'center', height: '100vh'}}>
-      
-
-      <form className="container text-center page-transition p-4 border border-secondary rounded"  onSubmit={submit}>
+    <div
+      className="container page-transition"
+      style={{ maxWidth: 450, alignContent: 'center', height: '100vh' }}
+    >
+      <form
+        className="container text-center page-transition p-4 border border-secondary rounded"
+        onSubmit={submit}
+      >
         <h2 className="mb-3">Sign In</h2>
+
+        {/* Email / username field */}
         <div className="mb-2">
-        
           <input
-            placeholder='Email or Username'
+            placeholder="Email or Username"
             className="form-control p-3"
             value={emailOrUsername}
             onChange={(e) => setUser(e.target.value)}
@@ -61,10 +72,11 @@ export default function Login() {
           />
         </div>
 
+        {/* Password field */}
         <div className="mb-2">
           <input
             type="password"
-            placeholder='Password'
+            placeholder="Password"
             className="form-control p-3"
             value={password}
             onChange={(e) => setPass(e.target.value)}
@@ -72,8 +84,10 @@ export default function Login() {
           />
         </div>
 
+        {/* Error message */}
         {error && <div className="alert alert-danger mt-2">{error}</div>}
 
+        {/* Submit button with spinner / success icon */}
         <button className="btn btn-primary mt-3" disabled={loading}>
           {/* Spinner while loading */}
           {loading && !success && (
@@ -94,11 +108,11 @@ export default function Login() {
           {!loading && !success && 'Login'}
         </button>
 
-
-        <p className ="text-center mt-3 pt-2"> Not Registered? <a href="/signup">Sign Up</a></p>
+        {/* Link to signup */}
+        <p className="text-center mt-3 pt-2">
+          Not Registered? <a href="/signup">Sign Up</a>
+        </p>
       </form>
-
-      
     </div>
   );
 }
