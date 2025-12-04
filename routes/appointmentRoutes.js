@@ -7,23 +7,24 @@
  *
  * Responsibilities:
  * - All routes protected using authMiddleware (router.use(protect))
- * - GET    /        → Fetch all appointments for logged-in user
+ * - GET    /        → Fetch all appointments
  * - POST   /        → Create new appointment
  * - PUT    /:id     → Update appointment by ID
  * - DELETE /:id     → Delete appointment by ID
  *
- * Notes:
- * - Ownership checks are handled inside appointmentController
+ * Role-based rules:
+ * - Create / Update: admin, dentist, receptionist
+ * - Delete         : admin, dentist, receptionist   ✅ updated
  */
 
-import express from 'express';
+import express from "express";
 import {
   getAppointments,
   createAppointment,
   updateAppointment,
   deleteAppointment,
-} from '../controllers/appointmentController.js';
-import { protect } from '../middleware/authMiddleware.js';
+} from "../controllers/appointmentController.js";
+import { protect, requireRole } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -32,14 +33,29 @@ router.use(protect);
 
 // /api/appointments  → list + create
 router
-  .route('/')
-  .get(getAppointments)      // Get all appointments for current user
-  .post(createAppointment);  // Create appointment
+  .route("/")
+  .get(
+    // All authenticated roles can view appointments
+    getAppointments
+  )
+  .post(
+    // Only staff roles can create appointments
+    requireRole("admin", "dentist", "receptionist"),
+    createAppointment
+  );
 
 // /api/appointments/:id → update + delete
 router
-  .route('/:id')
-  .put(updateAppointment)     // Update specific appointment
-  .delete(deleteAppointment); // Delete appointment
+  .route("/:id")
+  .put(
+    // Only staff roles can update appointments
+    requireRole("admin", "dentist", "receptionist"),
+    updateAppointment
+  )
+  .delete(
+    // ✅ Now admin, dentist, receptionist can delete
+    requireRole("admin", "dentist", "receptionist"),
+    deleteAppointment
+  );
 
 export default router;
