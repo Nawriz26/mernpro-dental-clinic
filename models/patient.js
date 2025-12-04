@@ -2,53 +2,63 @@
  * patient.js
  * ----------
  * Defines the Patient schema for the MERNPro Dental Clinic application.
- *
- * Responsibilities:
- * - Stores core patient demographics and contact information
- * - Provides base fields for patient management features
- *
- * Fields:
- * - name       : Full patient name
- * - email      : Unique email address (lowercased automatically)
- * - phone      : Contact number
- * - dateOfBirth: Optional birthdate
- * - address    : Optional text address
- * - notes      : Optional notes or medical remarks
- *
- * Notes:
- * - timestamps enables createdAt + updatedAt fields
  */
 
 import mongoose from "mongoose";
 
 const patientSchema = new mongoose.Schema(
   {
-    name:  { 
-      type: String, 
-      required: true, 
-      trim: true 
+    name: {
+      type: String,
+      required: true,
+      trim: true,
     },
 
-    email: { 
-      type: String, 
-      required: true, 
+    email: {
+      type: String,
+      required: true,
       unique: true,
-      lowercase: true, // ensures uniformity
+      lowercase: true,
+      match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     },
 
-    phone: { 
-      type: String, 
-      required: true 
+    phone: {
+      type: String,
+      required: true,
+      match: /^\d{3}-\d{3}-\d{4}$/,
     },
 
-    dateOfBirth: Date,    // optional
+    dateOfBirth: {
+      type: Date,
+      required: true,
+      validate: {
+        validator: function (value) {
+          return value < new Date();
+        },
+        message: "Date of birth must be before today",
+      },
+    },
 
-    address: String,      // optional
+    address: {
+      type: String,
+      required: true,
+    },
 
-    notes: String         // optional
+    notes: String,
+
+    // Attachments such as X-rays / reports
+    attachments: [
+      {
+        filename: String,
+        originalName: String,
+        mimeType: String,
+        size: Number,
+        uploadedAt: { type: Date, default: Date.now },
+      },
+    ],
   },
   {
-    timestamps: true, // adds createdAt + updatedAt fields
+    timestamps: true,
   }
 );
 
