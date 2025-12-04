@@ -1,32 +1,22 @@
-/**
- * Appointments.jsx
- * -----------------
- * Frontend UI for managing appointment records.
- *
- * Features:
- * - Load all appointments from backend
- * - Load patients for dropdown (patientId foreign-key linking)
- * - Create, update, delete appointments
- * - Edit mode (prefills form)
- * - Search + status filter
- * - Uses ConfirmModal for delete confirmation
- * - Displays appointment list with patient name resolved from patientId
- */
+// Appointments.jsx
+// ----------------
+// - Allows staff to create / edit / delete appointments
+// - Patient is selected from dropdown (patients fetched from API)
+// - Validations:
+//   - patientId: required
+//   - date: required & > today
+//   - time: required
+//   - reason: required
+//   - status: required
 
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { toast } from 'react-toastify';
-import ConfirmModal from '../components/ConfirmModal';
 
 export default function Appointments() {
-  // Appointment + patient state
   const [appointments, setAppointments] = useState([]);
   const [patients, setPatients] = useState([]);
 
-  // For ConfirmModal deletion
-  const [selectedPatient, setSelectedPatient] = useState(null);
-
-  // Form data for create/update
   const [form, setForm] = useState({
     patientId: '',
     date: '',
@@ -35,14 +25,12 @@ export default function Appointments() {
     status: 'Scheduled',
   });
 
+  const [errors, setErrors] = useState({});
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Search + filtering UI states
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('All');
+  const todayStr = new Date().toISOString().slice(0, 10);
 
-  // Load appointments from backend
   const loadAppointments = async () => {
     try {
       const { data } = await api.get('/appointments');
@@ -52,50 +40,59 @@ export default function Appointments() {
     }
   };
 
-  // Load patients into dropdown
   const loadPatients = async () => {
     try {
       const { data } = await api.get('/patients');
       setPatients(data);
     } catch {
-      toast.error('Failed to load patients for dropdown');
+      toast.error('Failed to load patients');
     }
   };
 
-  // Load data on initial render
   useEffect(() => {
     loadAppointments();
     loadPatients();
   }, []);
 
-  // Handle form updates
-  const onChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+  const validate = () => {
+    const errs = {};
+
+    if (!form.patientId) errs.patientId = 'Patient is required';
+
+    if (!form.date) {
+      errs.date = 'Date is required';
+    } else {
+      const chosen = new Date(form.date);
+      const today = new Date(todayStr);
+      if (chosen <= today) {
+        errs.date = 'Date must be greater than today';
+      }
+    }
+
+    if (!form.time) errs.time = 'Time is required';
+
+    if (!form.reason.trim()) errs.reason = 'Reason is required';
+
+    if (!form.status) errs.status = 'Status is required';
+
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
-  // Create or update appointment
   const onSubmit = async (e) => {
     e.preventDefault();
-
-    if (!form.patientId) {
-      toast.error('Please select a patient');
-      return;
-    }
+    if (!validate()) return;
 
     setLoading(true);
     try {
-      const payload = { ...form };
-
       if (editingId) {
-        await api.put(`/appointments/${editingId}`, payload);
+        await api.put(`/appointments/${editingId}`, form);
         toast.success('Appointment updated');
       } else {
-        await api.post('/appointments', payload);
+        await api.post('/appointments', form);
         toast.success('Appointment created');
       }
 
-      // Reset form
       setForm({
         patientId: '',
         date: '',
@@ -104,25 +101,20 @@ export default function Appointments() {
         status: 'Scheduled',
       });
       setEditingId(null);
-      loadAppointments();
-    } catch {
-      toast.error('Error saving appointment');
+      setErrors({});
+      await loadAppointments();
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Error saving appointment';
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
   };
 
-  // Prefill form for editing
   const onEdit = (appt) => {
     setEditingId(appt._id);
-
-    const patientId =
-      (appt.patientId && appt.patientId._id) ||
-      appt.patientId ||
-      '';
-
     setForm({
-      patientId,
+      patientId: appt.patientId?._id || appt.patientId || '',
       date: appt.date?.slice(0, 10) || '',
       time: appt.time || '',
       reason: appt.reason || '',
@@ -130,8 +122,8 @@ export default function Appointments() {
     });
   };
 
-  // Delete appointment
   const onDelete = async (id) => {
+    if (!window.confirm('Delete this appointment?')) return;
     try {
       await api.delete(`/appointments/${id}`);
       toast.success('Appointment deleted');
@@ -141,44 +133,37 @@ export default function Appointments() {
     }
   };
 
-  // Filter appointments by search + status
-  const filteredAppointments = appointments.filter((a) => {
-    const name = a.patientName || a.patientId?.name || '';
-    const matchesSearch =
-      name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      statusFilter === 'All' || a.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
-
   return (
     <div className="container py-4 page-transition">
       <h2>Appointments</h2>
 
       <div className="row mt-3">
-        {/* Left Column: Form */}
+        {/* LEFT: Appointment form */}
         <div className="col-md-5">
           <div className="card card-body">
             <h5>{editingId ? 'Edit Appointment' : 'New Appointment'}</h5>
-
             <form onSubmit={onSubmit}>
               {/* Patient dropdown */}
               <div className="mb-2">
                 <label className="form-label">Patient</label>
                 <select
-                  className="form-select"
-                  name="patientId"
+                  className={`form-select ${errors.patientId ? 'is-invalid' : ''}`}
                   value={form.patientId}
-                  onChange={onChange}
+                  onChange={(e) =>
+                    setForm({ ...form, patientId: e.target.value })
+                  }
                   required
                 >
-                  <option value="">-- Select Patient --</option>
+                  <option value="">Select a patient</option>
                   {patients.map((p) => (
                     <option key={p._id} value={p._id}>
-                      {p.name} {p.email ? `(${p.email})` : ''}
+                      {p.name} — {p.email}
                     </option>
                   ))}
                 </select>
+                {errors.patientId && (
+                  <div className="invalid-feedback">{errors.patientId}</div>
+                )}
               </div>
 
               {/* Date */}
@@ -186,12 +171,17 @@ export default function Appointments() {
                 <label className="form-label">Date</label>
                 <input
                   type="date"
-                  className="form-control"
-                  name="date"
+                  className={`form-control ${errors.date ? 'is-invalid' : ''}`}
                   value={form.date}
-                  onChange={onChange}
+                  onChange={(e) =>
+                    setForm({ ...form, date: e.target.value })
+                  }
                   required
+                  min={todayStr} // UI hint; validate again in JS
                 />
+                {errors.date && (
+                  <div className="invalid-feedback">{errors.date}</div>
+                )}
               </div>
 
               {/* Time */}
@@ -199,38 +189,52 @@ export default function Appointments() {
                 <label className="form-label">Time</label>
                 <input
                   type="time"
-                  className="form-control"
-                  name="time"
+                  className={`form-control ${errors.time ? 'is-invalid' : ''}`}
                   value={form.time}
-                  onChange={onChange}
+                  onChange={(e) =>
+                    setForm({ ...form, time: e.target.value })
+                  }
                   required
                 />
+                {errors.time && (
+                  <div className="invalid-feedback">{errors.time}</div>
+                )}
               </div>
 
               {/* Reason */}
               <div className="mb-2">
                 <label className="form-label">Reason</label>
                 <input
-                  className="form-control"
-                  name="reason"
+                  className={`form-control ${errors.reason ? 'is-invalid' : ''}`}
                   value={form.reason}
-                  onChange={onChange}
+                  onChange={(e) =>
+                    setForm({ ...form, reason: e.target.value })
+                  }
+                  required
                 />
+                {errors.reason && (
+                  <div className="invalid-feedback">{errors.reason}</div>
+                )}
               </div>
 
               {/* Status */}
               <div className="mb-2">
                 <label className="form-label">Status</label>
                 <select
-                  className="form-select"
-                  name="status"
+                  className={`form-select ${errors.status ? 'is-invalid' : ''}`}
                   value={form.status}
-                  onChange={onChange}
+                  onChange={(e) =>
+                    setForm({ ...form, status: e.target.value })
+                  }
+                  required
                 >
-                  <option>Scheduled</option>
-                  <option>Completed</option>
-                  <option>Cancelled</option>
+                  <option value="Scheduled">Scheduled</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Cancelled">Cancelled</option>
                 </select>
+                {errors.status && (
+                  <div className="invalid-feedback">{errors.status}</div>
+                )}
               </div>
 
               <button className="btn btn-primary mt-2" disabled={loading}>
@@ -240,35 +244,11 @@ export default function Appointments() {
           </div>
         </div>
 
-        {/* Right Column: Table */}
+        {/* RIGHT: Appointment list */}
         <div className="col-md-7">
-          <div className="table-responsive card card-body">
+          <div className="card card-body">
             <h5>Upcoming Appointments</h5>
-
-            {/* Search + status filter */}
-            <div className="d-flex gap-2 mb-3">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Search by patient name..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-
-              <select
-                className="form-select"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
-                <option value="All">All</option>
-                <option value="Scheduled">Scheduled</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
-              </select>
-            </div>
-
-            {/* Appointment table */}
-            <table className="table table-striped mt-2 rounded">
+            <table className="table table-striped mt-2">
               <thead>
                 <tr>
                   <th>Patient</th>
@@ -278,59 +258,43 @@ export default function Appointments() {
                   <th></th>
                 </tr>
               </thead>
-
               <tbody>
-                {filteredAppointments.map((a) => (
+                {appointments.map((a) => (
                   <tr key={a._id}>
-                    <td>{a.patientName || a.patientId?.name || '(Unknown)'}</td>
+                    <td>
+                      {a.patientId?.name || a.patientName || 'Unknown'}
+                    </td>
                     <td>{a.date?.slice(0, 10)}</td>
                     <td>{a.time}</td>
                     <td>{a.status}</td>
                     <td className="text-end">
-                      {/* Edit */}
                       <button
-                        className="btn btn-sm btn-outline-secondary me-2 w-100"
+                        className="btn btn-sm btn-outline-secondary me-2"
                         onClick={() => onEdit(a)}
                       >
                         Edit
                       </button>
-
-                      {/* Delete */}
                       <button
-                        className="btn btn-sm btn-outline-danger w-100"
-                        onClick={() => setSelectedPatient(a._id)}
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => onDelete(a._id)}
                       >
                         Delete
                       </button>
                     </td>
                   </tr>
                 ))}
-
-                {filteredAppointments.length === 0 && (
+                {appointments.length === 0 && (
                   <tr>
                     <td colSpan="5" className="text-muted">
-                      No appointments found.
+                      No appointments yet.
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
-
-            {/* Delete Confirmation Modal */}
-            <ConfirmModal
-              show={!!selectedPatient}
-              message="Are you sure that you wish to delete the appointment?"
-              onConfirm={async () => {
-                if (!selectedPatient) return;
-                await onDelete(selectedPatient);
-                setSelectedPatient(null);
-              }}
-              onCancel={() => setSelectedPatient(null)}
-              confirmText="Delete"
-              cancelText="Cancel"
-            />
           </div>
         </div>
+
       </div>
     </div>
   );
