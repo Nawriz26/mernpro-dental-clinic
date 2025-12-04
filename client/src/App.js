@@ -8,6 +8,11 @@
  * - Defines routing structure using react-router-dom
  * - Applies PrivateRoute protection to secured pages
  * - Renders shared Navbar + ToastContainer globally
+ *
+ * Notes:
+ * - Public routes:  /, /login, /signup
+ * - Protected routes: /dashboard, /profile, /appointments, /calendar
+ *   (actual role-based visibility for links is handled in Navbar + backend)
  */
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -29,6 +34,7 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import Appointments from './pages/Appointments';
+import Calendar from './pages/Calendar'; // Calendar page for appointments view
 
 export default function App() {
   return (
@@ -36,7 +42,7 @@ export default function App() {
       <AuthProvider>
         <PatientProvider>
           <BrowserRouter>
-            {/* Global top navigation */}
+            {/* Global top navigation (visible on all pages) */}
             <Navbar />
 
             {/* Global toast notifications */}
@@ -62,6 +68,8 @@ export default function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/appointments" element={<Appointments />} />
+                {/* Calendar route – protected. Role-based access is enforced on backend + Navbar */}
+                <Route path="/calendar" element={<Calendar />} />
               </Route>
 
               {/* FALLBACK 404 PAGE */}
