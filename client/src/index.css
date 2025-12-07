@@ -26,6 +26,31 @@ body {
 /*     DARK THEME STYLING    */
 /* ------------------------- */
 
+.dark-theme .btn, .dark-theme .pagination .page-link {
+  background-color: #2b3644;
+  color: #f8f9fa;
+  border: 1px solid #101829;
+}
+
+
+.dark-theme .btn:hover, .dark-theme .pagination .page-link:hover {
+  background-color: rgb(34, 34, 34);
+  color: #dbdbdb;
+}
+
+.dark-theme .page-item.active .page-link {
+  background-color: #132858;
+  border-color: #101829;
+  color: #f8f9fa;
+}
+
+.dark-theme .page-item.disabled .page-link {
+  background-color: #1d273d;
+  border-color: #101829;
+  color: #6c757d;
+}
+
+
 .dark-theme .modal-content {
   border: 1px solid #101829;
   background-color: #1d273d;

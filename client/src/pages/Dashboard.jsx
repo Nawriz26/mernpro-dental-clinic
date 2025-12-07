@@ -198,7 +198,7 @@ export default function Dashboard() {
 
             {/* Pagination */}
             <nav aria-label="Patient pages">
-              <ul className="pagination pagination-sm mb-0 justify-content-end">
+              <ul className=".darktheme .pages pagination pagination-sm mb-0 justify-content-end">
                 <li className={`page-item ${safePage === 1 ? "disabled" : ""}`}>
                   <button
                     className="page-link"

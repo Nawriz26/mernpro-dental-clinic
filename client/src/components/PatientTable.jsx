@@ -44,13 +44,9 @@ export default function PatientTable({
               <td>{p.phone}</td>
 
               <td className="text-center">
-                {/* Edit button */}
-                <button
-                  className="btn btn-sm btn-outline-secondary p-1 w-100 mb-1"
-                  onClick={() => onEdit(p)}
-                >
-                  Edit
-                </button>
+                <div className="d-flex align-items-center"> 
+                
+               
 
                 {/* Delete button (opens ConfirmModal via parent) */}
                 <button
@@ -60,6 +56,14 @@ export default function PatientTable({
                   Delete
                 </button>
 
+                {/* Edit button */}
+                 <button
+                  className="btn btn-sm btn-outline-secondary p-1 w-100 mb-1"
+                  onClick={() => onEdit(p)}
+                >
+                  Edit
+                </button>
+                </div>
                 {/* Upload X-ray / attachment */}
                 <label className="btn btn-sm btn-outline-primary p-1 w-100 mb-1">
                   Upload X-ray

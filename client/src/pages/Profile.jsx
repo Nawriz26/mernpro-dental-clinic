@@ -50,7 +50,8 @@ export default function Profile() {
   };
 
   return (
-    <div className="container py-4 page-transition" style={{ maxWidth: 500 }}>
+    <div className="container page-transition" style={{ maxWidth: 500, alignContent: 'center', height: '100vh' }}>
+      <div className=" d-flex flex-column p-4 border border-secondary rounded"> 
       <h2>My Profile</h2>
 
       <form onSubmit={submit} className="mt-3">
@@ -83,6 +84,7 @@ export default function Profile() {
           {loading ? 'Saving...' : 'Save Changes'}
         </button>
       </form>
+      </div>
     </div>
   );
 }
