@@ -80,7 +80,7 @@ export default function Profile() {
           />
         </div>
 
-        <button className="btn btn-primary mt-2" disabled={loading}>
+        <button className="btn btn-primary mt-2" style={{ background: '#008080', fontWeight: 'bold' }} disabled={loading}>
           {loading ? 'Saving...' : 'Save Changes'}
         </button>
       </form>

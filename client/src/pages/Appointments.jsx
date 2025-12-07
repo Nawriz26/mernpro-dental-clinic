@@ -237,7 +237,7 @@ export default function Appointments() {
                 )}
               </div>
 
-              <button className="btn btn-primary mt-2" disabled={loading}>
+              <button className="btn btn-primary mt-2" style={{ background: '#008080', fontWeight: 'bold' }} disabled={loading}>
                 {loading ? 'Saving...' : 'Save'}
               </button>
             </form>
@@ -266,7 +266,18 @@ export default function Appointments() {
                     </td>
                     <td>{a.date?.slice(0, 10)}</td>
                     <td>{a.time}</td>
-                    <td>{a.status}</td>
+                    <td  style={{
+                            backgroundColor:
+                              a.status === "Completed"
+                                ? "green"
+                                : a.status === "Cancelled"
+                                ? "darkred"
+                                : a.status === "Scheduled"
+                                ? "darkblue"
+                                : "black",
+                                fontWeight: 'bold',textAlign: 'center', borderRadius: '8px', color: 'white',
+                          }}>{a.status}
+                     </td>
                     <td className="text-end">
                       <button
                         className="btn btn-sm btn-outline-secondary me-2"
@@ -275,6 +286,7 @@ export default function Appointments() {
                         Edit
                       </button>
                       <button
+                      // style={{ background: '#800000ff', fontWeight: 'bold' }}
                         className="btn btn-sm btn-outline-danger"
                         onClick={() => onDelete(a._id)}
                       >

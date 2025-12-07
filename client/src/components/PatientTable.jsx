@@ -47,10 +47,10 @@ export default function PatientTable({
                 <div className="d-flex align-items-center"> 
                 
                
-
+                {/* style={{ background: '#800000ff', fontWeight: 'bold' }} */}
                 {/* Delete button (opens ConfirmModal via parent) */}
                 <button
-                  className="btn btn-sm btn-outline-danger p-1 w-100 mb-1"
+                  className="btn btn-sm btn-outline-danger p-1 w-100 mb-1" 
                   onClick={() => onDelete(p._id)}
                 >
                   Delete

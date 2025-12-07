@@ -31,8 +31,8 @@ export default function Calendar() {
   return (
     <div className="container py-4 page-transition">
       <h2>Appointment Calendar</h2>
-      <p className="text-muted">
-        Simple calendar-style view grouped by date.
+      <p className="text-light">
+        Appointments are grouped by date.
       </p>
 
       {sortedDates.length === 0 && (
@@ -55,7 +55,20 @@ export default function Calendar() {
                     — {a.patientName || "Unknown patient"}{" "}
                     {a.reason && <> — <em>{a.reason}</em></>}
                   </div>
-                  <span className="badge bg-secondary">{a.status}</span>
+                  <span
+                    className={`badge ${
+                      a.status === "Completed"
+                        ? "bg-success"
+                        : a.status === "Cancelled"
+                        ? "bg-danger"
+                        : a.status === "Scheduled"
+                        ? "bg-primary"
+                        : "bg-secondary"
+                    }`}
+                  >
+                  {a.status}
+                </span>
+
                 </div>
               </li>
             ))}

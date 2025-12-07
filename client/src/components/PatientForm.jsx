@@ -166,7 +166,7 @@ export default function PatientForm({ onSubmit, initial }) {
         />
       </div>
 
-      <button className="btn btn-primary mt-3 float-end">
+      <button className="btn btn-primary mt-3 float-end" style={{ background: '#008080', fontWeight: 'bold' }}>
         {initial ? 'Update' : 'Save'}
       </button>
     </form>

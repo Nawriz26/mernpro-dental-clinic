@@ -150,7 +150,45 @@ body.dark-theme {
   background-color: #101829;
   color: #f8f9fa;
 }
-
+/* class="btn btn-sm btn-outline-danger p-1 w-100 mb-1" */
+.btn.btn-sm.btn-outline-danger.p-1.w-100.mb-1 {
+  color: #ffffff;
+  background-color: darkred;
+}
+.btn.btn-sm.btn-outline-secondary.p-1.w-100.mb-1 {
+  color: #ffffff;
+  background-color: green;
+}
+.btn.btn-sm.btn-outline-primary.p-1.w-100.mb-1{
+  color: #ffffff;
+  background-color: black;
+}
+.btn.btn-sm.btn-outline-dark.p-1.w-100 {
+  color: #ffffff;
+  background-color: blue;
+}
+.btn.btn-sm.btn-outline-danger {
+  color: #ffffff;
+  background-color: darkred;
+}
+.btn.btn-sm.btn-outline-secondary.me-2 {
+  color: #ffffff;
+  background-color: teal;
+}
+.btn.btn-primary.me-2 {
+  color: #ffffff;
+  font-weight: bold;
+}
+.light-theme .btn.btn-outline-primary{
+  color: #ffffff;
+  font-weight: bold;
+  background-color: darkolivegreen;
+}
+.dark-theme .btn.btn-outline-primary{
+  color: #ffffff;
+  font-weight: bold;
+  background-color: teal;
+}
 .dark-theme .card {
   background-color: #1d273d;
   color: #f8f9fa;
@@ -169,6 +207,7 @@ body.dark-theme {
   background-color: #132858 !important;
   color: #f8f9fa;
 }
+
 
 /* ------------------------- */
 /*    PAGE TRANSITIONS       */
